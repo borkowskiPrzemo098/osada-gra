@@ -993,12 +993,12 @@ function tap(x,y){if(window.__visit){const r=pick(x,y);if(r&&r.k==='b'){const b=
   let r=pick(x,y);if(!r){const p=groundAt(x,y);if(p){const i=Math.floor(p.x+H),j=Math.floor(p.z+H),o=S.obs.find(o=>o.i===i&&o.j===j);if(o)r={k:'o',id:o.id}}}
   if(!r){deselect();return}
   if(r.k==='hero'){deselect();sfx('tap');openHero();return}
-  if(r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b&&DEF[b.t].prod&&!b.job&&readyB(b)){collect(b,x,y);if(SEL&&SEL.id===b.id)return}}
+  if(r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b&&DEF[b.t].prod&&!b.job&&canCol(b)){collect(b,x,y);if(SEL&&SEL.id===b.id)return}}
   select(r)}
 function select(r){SEL=r;sfx('tap');const rec=r.k==='b'?recs[r.id]:null;if(rec)rec.pop=performance.now();$('#acts').dataset.sig='';drawSel()}
 function deselect(){SEL=null;$('#sel').classList.remove('on');HL.act=null}
 const bubT=b=>RES[DEF[b.t].prod]?Math.max(5,rate(b)*.5,intCap(b)*.08):DEF[b.t].prod==='gems'?1:5;
-const COLCD=30000;const readyB=b=>stored(b)>=bubT(b)&&Date.now()-(b.lc||0)>=COLCD;
+const COLCD=30000;const cdLeft=b=>Math.max(0,COLCD-(Date.now()-(b.lc||0)))/1000;const readyB=b=>stored(b)>=bubT(b)&&!cdLeft(b);const canCol=b=>stored(b)>=1&&!cdLeft(b);
 function collect(b,x,y){const r=DEF[b.t].prod,st=stored(b),room=RES[r]?capOf(r)-S.res[r]:1e12,take=Math.floor(Math.min(st,room));
   if(take<=0){toast(RES[r]&&st>=1?`${RES[r].e} Magazyn pełny — ulepsz ${r==='gold'?'Skarbiec':'Spichlerz'}`:`${ICON(r)} Jeszcze nic do zebrania`);sfx('err');return}
   if(RES[r])S.res[r]+=take;else gain(r,take);b.t0=Date.now()-(st-take)/rate(b)*60000;S.st['col_'+r]=(S.st['col_'+r]||0)+take;b.lc=Date.now();
@@ -1024,7 +1024,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
     else if(b.t==='hut')inf=`Budowniczowie: ${builders()} · wolni: ${freeB()}`;
     acts.push(['ℹ️','Info','','',()=>infoDialog(b)]);
     if(b.job)acts.push(['⚡','Ukończ',`${gemCost((b.job.end-Date.now())/1000)}💎`,'p',()=>speed(b)]);
-    if(d.prod&&b.l>=1&&readyB(b))acts.push([ICON(d.prod),'Zbierz','','g',e=>collect(b,e.clientX,e.clientY)]);
+    if(d.prod&&b.l>=1&&stored(b)>=1){const cl=cdLeft(b);acts.push([ICON(d.prod),'Zbierz',cl?'za '+Math.ceil(cl)+'s':'',cl?'':'g',e=>collect(b,e.clientX,e.clientY),cl>0])}
     if(!b.job&&b.l>=1&&d.cat!=='dec'&&b.t!=='hut'&&b.t!=='wall'){const ml=maxLvl(b.t),c=b.l<ml?upCost(b):null;
       acts.push(['⬆️','Ulepsz',c?costTxt(c):b.l>=(b.t==='hall'?8:d.max)?'MAX':hallName(hallL())+' ↑','y',()=>upDialog(b),!c])}
     if(TRAINB.includes(b.t)&&b.l>=1)acts.push(['🪖','Szkolenie','','',()=>openArmy('army')]);
@@ -1039,7 +1039,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
   $('#selN').textContent=n;$('#selI').textContent=inf;$('#selI').style.display=inf?'':'none';
   const sig=SEL.k+SEL.id+n+'|'+acts.map(a=>a[0]+a[1]+a[2]+a[3]+(a[5]?1:0)).join('|');if($('#acts').dataset.sig===sig&&$('#sel').classList.contains('on'))return;$('#acts').dataset.sig=sig;
   const A=$('#acts');A.innerHTML='';acts.forEach(([ic,l,sub,cls,fn,off])=>{const el=document.createElement('button');el.className='act '+cls+(off?' off':'')+(HL.act===l&&HL.arrow&&Date.now()<HL.arrow.until?' hl':'');
-    el.innerHTML=`<div class="o">${ic}</div><span class="ol">${l}</span>${sub?`<em>${sub}</em>`:''}`;el.onclick=e=>{if(off){toast(sub==='MAX'?'Maksymalny poziom':'Najpierw ulepsz '+hallName(hallL()));sfx('err');return}fn(e)};A.appendChild(el)});
+    el.innerHTML=`<div class="o">${ic}</div><span class="ol">${l}</span>${sub?`<em>${sub}</em>`:''}`;el.onclick=e=>{if(off){toast(String(sub).startsWith('za ')?'⏳ Następny zbiór '+sub:sub==='MAX'?'Maksymalny poziom':'Najpierw ulepsz '+hallName(hallL()));sfx('err');return}fn(e)};A.appendChild(el)});
   $('#sel').classList.add('on')}
 function speed(t){const sec=(t.job.end-Date.now())/1000,g=gemCost(sec);if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;t.job.end=Date.now();checkJobs();dirty=true}
 function clearObs(o,c){if(freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return}if(!canPay(c)){toast('Brakuje surowców');sfx('err');return}
