@@ -65,6 +65,29 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .quest.done{animation:glow 1s ease-in-out infinite}
 @keyframes glow{50%{box-shadow:0 3px 0 rgba(0,0,0,.3),0 0 0 4px var(--gold)}}
 
+/* top bar */
+.topbar{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;gap:4px;align-items:center;padding:calc(env(safe-area-inset-top) + 5px) 5px 5px;background:linear-gradient(rgba(40,24,10,.82),rgba(40,24,10,.6));border-bottom:2px solid rgba(0,0,0,.35)}
+.tlv{flex:0 0 34px;height:34px;border-radius:10px;border:2px solid var(--ink);background:radial-gradient(circle at 35% 30%,#7cc7ff,#2f7fd0);display:grid;place-items:center;position:relative;overflow:hidden;cursor:pointer}
+.tlv b{font:400 17px "Lilita One";position:relative;z-index:1}
+.tlv i{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.45)}
+.tlv u{display:block;height:100%;background:#9fe36a;transform-origin:left;transform:scaleX(0);transition:transform .4s}
+.bars{flex:1;display:flex;gap:4px;min-width:0}
+.res{flex:1;min-width:0;position:relative;height:34px;border-radius:10px;background:rgba(0,0,0,.42);border:2px solid rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:2px;overflow:hidden;cursor:pointer}
+.res .i{font-size:16px;line-height:1;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
+.res .v{font:400 13.5px "Lilita One";color:#fff;white-space:nowrap}
+.res .c{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.4)}
+.res .c b{display:block;height:100%;transform-origin:left;transform:scaleX(0);transition:transform .35s}
+.res.full .v{color:#ffcf5a}.res.bump{animation:bump .3s}
+@keyframes bump{50%{transform:scale(1.1)}}
+.qdone{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 50px);transform:translate(-50%,-140%);opacity:0;z-index:13;width:min(92vw,380px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.35);padding:8px 10px;display:flex;align-items:center;gap:9px;transition:transform .3s cubic-bezier(.2,1.3,.4,1),opacity .2s;pointer-events:none}
+.qdone.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.qdone .ic{font-size:30px}.qdone .tx{flex:1;min-width:0;font-size:12.5px;line-height:1.25}.qdone .tx b{display:block;font:400 14px "Lilita One";color:var(--green-d)}
+.hl{animation:hlp 1s ease-in-out infinite!important;position:relative;z-index:2}
+@keyframes hlp{50%{box-shadow:0 0 0 4px #fff,0 0 0 8px #ffc83d}}
+.act.hl .o{animation:hlp 1s ease-in-out infinite}
+.arrow{font-size:38px;animation:arr .7s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(0,0,0,.4))}
+@keyframes arr{50%{translate:0 -12px}}
+.panel.tall{height:min(86dvh,760px)}
 /* bottom nav */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:12;display:flex;gap:4px;padding:6px 6px calc(env(safe-area-inset-bottom) + 6px);background:linear-gradient(#8f5f33,#6a4320);border-top:3px solid var(--ink);box-shadow:0 -4px 12px rgba(0,0,0,.2)}
 .nb{flex:1;position:relative;border:3px solid var(--ink);border-radius:14px;background:linear-gradient(#fff3d1,#e7cf96);box-shadow:0 3px 0 rgba(0,0,0,.35);padding:4px 0 3px;display:flex;flex-direction:column;align-items:center;cursor:pointer;font:400 11.5px "Lilita One";color:var(--ink);min-width:0}
@@ -182,7 +205,7 @@ textarea{user-select:text;-webkit-user-select:text}
 .mcard .hd b{font:400 19px "Lilita One";display:block}
 .mcard .hd small{font-size:12.5px;color:#6a5434}
 
-.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 70px);transform:translate(-50%,-14px);z-index:50;background:rgba(30,20,10,.92);color:#fff;padding:9px 16px;border-radius:14px;font:400 15.5px "Lilita One";opacity:0;transition:.22s;pointer-events:none;max-width:92vw;text-align:center}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 52px);transform:translate(-50%,-14px);z-index:50;background:rgba(30,20,10,.92);color:#fff;padding:9px 16px;border-radius:14px;font:400 15.5px "Lilita One";opacity:0;transition:.22s;pointer-events:none;max-width:92vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .fly{position:fixed;left:0;top:0;z-index:60;font-size:26px;pointer-events:none;transition:transform .7s cubic-bezier(.5,-0.3,.6,1),opacity .7s;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
 .pop{position:fixed;z-index:60;pointer-events:none;font:400 23px "Lilita One";transform:translate(-50%,-50%);animation:up 1s ease-out forwards;white-space:nowrap}
@@ -201,13 +224,8 @@ textarea{user-select:text;-webkit-user-select:text}
 <canvas id="c"></canvas>
 <div id="labels"></div>
 
-<div class="hud tl">
-  <div class="player"><div class="star ol" id="plv">1</div><div><div class="pname ol" id="pname">Zagroda</div><div class="xpb"><i id="pxp"></i></div></div></div>
-  <div class="pill ol" id="bld">👷 1/1</div>
-  <div class="threat" id="threat"></div>
-  <div class="quest" id="quest"></div>
-</div>
-<div class="hud tr" id="bars"></div>
+<div class="topbar" id="top"><div class="tlv" id="plvw"><b class="ol" id="plv">1</b><i><u id="pxp"></u></i></div><div id="bars" class="bars"></div></div>
+<div class="qdone" id="quest"></div>
 
 <nav class="nav" id="nav">
   <button class="nb main" data-n="build"><span class="e">🔨</span>Budowanie<span class="dot" id="dBuild">!</span></button>
@@ -344,6 +362,7 @@ const QUESTS=[
 ];
 const CHAPTERS=['Rozdział I · Skromna zagroda','Rozdział II · Obrona wioski','Rozdział III · Ratusz','Rozdział IV · Potęga','Rozdział V · Królestwo'];
 const qDone=q=>{const[a,b]=q.p();return a>=b};
+const GO=[['col','farm'],['build','lumber'],['col','lumber'],['build','farm'],['build','house'],['obs'],['build','hut'],['land'],['up','hall'],['build','coop'],['build','barracks'],['train','f'],['raid'],['build','wall'],['build','quarry'],['map',1],['bs'],['up','hall'],['build','range'],['train','a'],['build','pasture'],['build','mine'],['build','smithy'],['raid'],['map',3],['build','market'],['up','hall'],['build','stable'],['train','c'],['build','sheepf'],['up','hall'],['map',6],['up','hall'],['raid'],['land'],['up','hall'],['map',10],['up','hall']];
 
 /* =====================================================================
    STATE / SAVE
@@ -756,7 +775,7 @@ function burst(pos,n=34){for(let i=0;i<n;i++)particle(pos.clone().add(new V3(0,.
 /* =====================================================================
    CAMERA & INPUT
 ===================================================================== */
-const cam={t:new V3(-1.2,0,-1.2),d:22,yaw:Math.PI/4,pitch:.92};
+const cam={t:new V3(-.4,0,-.4),d:22,yaw:Math.PI/4,pitch:.92};
 let intro={t0:performance.now(),d0:58,y0:-0.6};
 function updCam(){const c=Math.cos(cam.pitch);camera.position.set(cam.t.x+Math.sin(cam.yaw)*c*cam.d,Math.sin(cam.pitch)*cam.d,cam.t.z+Math.cos(cam.yaw)*c*cam.d);camera.lookAt(cam.t)}
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?46:36;camera.updateProjectionMatrix();if(MAP.open)resizeMap()}
@@ -766,12 +785,12 @@ function setRay(x,y){ndc.set(x/innerWidth*2-1,-(y/innerHeight)*2+1);ray.setFromC
 function groundAt(x,y){setRay(x,y);const p=new V3();return ray.ray.intersectPlane(ground,p)?p:null}
 function pick(x,y){setRay(x,y);const h=ray.intersectObjects(picks.filter(p=>p.visible),true)[0];if(!h)return null;let o=h.object;while(o&&!o.userData.ref)o=o.parent;return o?o.userData.ref:null}
 const ptrs=new Map();let gest=null;
-canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});audioInit();intro=null;
+canvas.addEventListener('pointerdown',e=>{canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});audioInit();intro=null;camFly=null;
   if(ptrs.size===1){gest={x:e.clientX,y:e.clientY,moved:false,ghost:false,p0:groundAt(e.clientX,e.clientY)};
     if(PL){setRay(e.clientX,e.clientY);const s=DEF[PL.t].s,p=gest.p0;const inF=p&&p.x>=PL.i-H&&p.x<=PL.i-H+s&&p.z>=PL.j-H&&p.z<=PL.j-H+s;if(inF||ray.intersectObject(PL.g,true).length){gest.ghost=true;gest.gOff=p?[p.x-(PL.i-H+s/2),p.z-(PL.j-H+s/2)]:[0,0]}}}
   if(ptrs.size===2){const[a,b]=[...ptrs.values()];gest={pinch:1,d:Math.hypot(a.x-b.x,a.y-b.y),a:Math.atan2(b.y-a.y,b.x-a.x),cd:cam.d,cy:cam.yaw,moved:true}}});
 canvas.addEventListener('pointermove',e=>{if(!ptrs.has(e.pointerId)||!gest)return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
-  if(gest.pinch&&ptrs.size===2){const[a,b]=[...ptrs.values()];cam.d=clamp(gest.cd*gest.d/Math.hypot(a.x-b.x,a.y-b.y),9,44);cam.yaw=gest.cy-(Math.atan2(b.y-a.y,b.x-a.x)-gest.a);updCam();return}
+  if(gest.pinch&&ptrs.size===2){const[a,b]=[...ptrs.values()];cam.d=clamp(gest.cd*gest.d/Math.hypot(a.x-b.x,a.y-b.y),9,44);cam.yaw=gest.cy+(Math.atan2(b.y-a.y,b.x-a.x)-gest.a);updCam();return}
   if(Math.hypot(e.clientX-gest.x,e.clientY-gest.y)>7)gest.moved=true;if(!gest.moved)return;
   if(gest.ghost){const p=groundAt(e.clientX,e.clientY);if(p)moveGhost(p.x-gest.gOff[0],p.z-gest.gOff[1]);return}
   const p1=groundAt(e.clientX,e.clientY);if(p1&&gest.p0){cam.t.add(gest.p0.clone().sub(p1));cam.t.x=clamp(cam.t.x,-18,18);cam.t.z=clamp(cam.t.z,-18,18);updCam()}});
@@ -789,7 +808,7 @@ function tap(x,y){
   if(r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b&&DEF[b.t].prod&&!b.job&&stored(b)>=bubT(b)){collect(b,x,y);if(SEL&&SEL.id===b.id)return}}
   select(r)}
 function select(r){SEL=r;sfx('tap');const rec=r.k==='b'?recs[r.id]:null;if(rec)rec.pop=performance.now();$('#acts').dataset.sig='';drawSel()}
-function deselect(){SEL=null;$('#sel').classList.remove('on')}
+function deselect(){SEL=null;$('#sel').classList.remove('on');HL.act=null}
 const bubT=b=>Math.max(5,intCap(b)*.06);
 function collect(b,x,y){const r=DEF[b.t].prod,st=stored(b),room=capOf(r)-S.res[r],take=Math.floor(Math.min(st,room));
   if(take<=0){toast(`${RES[r].e} Magazyn pełny — ulepsz ${r==='gold'?'Skarbiec':'Spichlerz'}`);sfx('err');return}
@@ -827,7 +846,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
   }
   $('#selN').textContent=n;$('#selI').textContent=inf;$('#selI').style.display=inf?'':'none';
   const sig=SEL.k+SEL.id+n+'|'+acts.map(a=>a[0]+a[1]+a[2]+a[3]+(a[5]?1:0)).join('|');if($('#acts').dataset.sig===sig&&$('#sel').classList.contains('on'))return;$('#acts').dataset.sig=sig;
-  const A=$('#acts');A.innerHTML='';acts.forEach(([ic,l,sub,cls,fn,off])=>{const el=document.createElement('button');el.className='act '+cls+(off?' off':'');
+  const A=$('#acts');A.innerHTML='';acts.forEach(([ic,l,sub,cls,fn,off])=>{const el=document.createElement('button');el.className='act '+cls+(off?' off':'')+(HL.act===l&&HL.arrow&&Date.now()<HL.arrow.until?' hl':'');
     el.innerHTML=`<div class="o">${ic}</div><span class="ol">${l}</span>${sub?`<em>${sub}</em>`:''}`;el.onclick=e=>{if(off){toast(sub==='MAX'?'Maksymalny poziom':'Najpierw ulepsz '+hallName(hallL()));sfx('err');return}fn(e)};A.appendChild(el)});
   $('#sel').classList.add('on')}
 function speed(t){const sec=(t.job.end-Date.now())/1000,g=gemCost(sec);if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;t.job.end=Date.now();checkJobs();dirty=true}
@@ -982,6 +1001,7 @@ function drawMap(){const d=Math.min(devicePixelRatio,2),z=MAP.v.z,x=mx,now=Date.
     const lft=((go?m.ta:m.tb)-now)/1000;mapLabel(ft(lft),px,py-30*K,K,13)}
   for(const s of S.world.sites){const k=kindOf(s.lvl),cool=s.cool>now,sel=MAP.sel===s.id,R=(26+s.lvl*1.6)*K;
     x.fillStyle='rgba(0,0,0,.18)';x.beginPath();x.ellipse(s.x,s.y+R*.75,R*1.05,R*.35,0,0,7);x.fill();
+    if(MAP.flash&&MAP.flash.id===s.id&&now<MAP.flash.until){x.strokeStyle='#ffc83d';x.lineWidth=6*K;x.beginPath();x.arc(s.x,s.y,R+10*K+Math.sin(now/120)*5*K,0,7);x.stroke()}
     x.fillStyle=cool?'#9a917e':s.lvl>=8?'#8a5ad0':s.lvl>=6?'#d0493a':s.lvl>=3?'#d99a2b':'#7fb04a';x.strokeStyle=sel?'#fff':'#2b1a0b';x.lineWidth=(sel?6:3.5)*K;x.beginPath();x.arc(s.x,s.y,R,0,7);x.fill();x.stroke();
     x.font=`${R*1.15}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;x.textAlign='center';x.textBaseline='middle';x.globalAlpha=cool?.5:1;x.fillText(cool?'🔥':k[2],s.x,s.y+2*K);x.globalAlpha=1;
     x.fillStyle='#2b1a0b';x.beginPath();x.arc(s.x+R*.8,s.y-R*.8,12*K,0,7);x.fill();x.fillStyle='#ffd34d';x.font=`${14*K}px "Lilita One",sans-serif`;x.fillText(s.lvl,s.x+R*.8,s.y-R*.78);
@@ -1048,7 +1068,7 @@ $('#plOk').onclick=()=>{if(!PL||!PL.ok)return;const{t,id,i,j}=PL;
    PANELS
 ===================================================================== */
 let PANEL=null;
-function openPanel(title,kind,render){PANEL={kind,render};$('#pB').dataset.h='';$('#pT').textContent=title;$('#panel').classList.add('on');$('#scrim').classList.add('on');$('#pTabs').innerHTML='';render();sfx('tap')}
+function openPanel(title,kind,render){PANEL={kind,render};$('#panel').classList.toggle('tall',['build','army','goals'].includes(kind));$('#pB').dataset.h='';$('#pT').textContent=title;$('#panel').classList.add('on');$('#scrim').classList.add('on');$('#pTabs').innerHTML='';render();sfx('tap')}
 function closePanel(){PANEL=null;$('#panel').classList.remove('on');$('#scrim').classList.remove('on')}
 $('#pX').onclick=closePanel;$('#scrim').onclick=closePanel;
 function dialog(title,html,btns=[]){openPanel(title,'dlg',()=>{$('#pB').innerHTML=html+(btns.length?`<div class="row" style="margin-top:12px">${btns.map((b,i)=>`<button class="btn ${b[2]||''}" style="flex:1" data-i="${i}" ${b[3]?'disabled':''}>${b[0]}</button>`).join('')}</div>`:'');
@@ -1097,7 +1117,9 @@ let armyTab='army';
 function openArmy(t){if(t)armyTab=t;openPanel('Wojsko','army',renderArmy)}
 function renderArmy(){tabs([['army','🪖 Armia'],['def','🛡️ Obrona'],['units','📖 Jednostki']],armyTab,t=>{armyTab=t;$('#pB').dataset.h='';renderArmy()});
   let h='';const away=awayUnits();
-  if(armyTab==='army'){h+=`<div class="stat"><span>Miejsca w armii</span><b>${usedH()} / ${armyCap()}</b></div>`;
+  if(armyTab==='army'){const rs=raidsOn()?raidState():null;if(rs)h+=`<div class="li ${rs.lvl==='bad'?'cur':''}" id="aRaid" style="cursor:pointer"><div class="ic">${rs.lvl==='good'?'🛡️':'⚠️'}</div><div class="tx"><b>Najazd za <span data-end="${S.raid.at}"></span></b>${S.raid.name} · ${mixTxt(S.raid.E)}<br>wróg ${rs.ee} vs Twoja obrona ${rs.pe} — ${rs.lvl==='good'?'jesteś gotowy':rs.lvl==='mid'?'wyrównane siły':'za słaba obrona!'}</div></div>`;else h+=`<div class="li"><div class="ic">🕊️</div><div class="tx"><b>Spokój</b>Najazdy zaczną się w Rozdziale II.</div></div>`;
+    S.marches.forEach(m=>{const s=site(m.sid);h+=`<div class="stat"><span>🗺️ ${m.ph==='go'?'Atak na '+s.name:'Powrót z '+s.name} · ${Object.entries(m.units).filter(x=>x[1]).map(([u,n])=>UNITS[u].e+n).join(' ')}</span><b data-end="${m.ph==='go'?m.ta:m.tb}"></b></div>`});
+    h+=`<div class="stat"><span>Miejsca w armii</span><b>${usedH()} / ${armyCap()}</b></div>`;
     if(nUnits(away))h+=`<div class="stat"><span>Na wyprawach</span><b>${Object.entries(away).filter(x=>x[1]).map(([u,n])=>UNITS[u].e+n).join(' ')}</b></div>`;
     for(const B of TRAINB){const bb=S.b.find(b=>b.t===B&&b.l>=1),q=S.train[B];h+=`<h4>${DEF[B].n}${bb?` · poz. ${bb.l}`:''}</h4>`;
       if(!bb){h+=`<p class="note">${allowed(B)?`Zbuduj ${DEF[B].n} w Budowaniu.`:`Dostępne od: ${hallName(unlockAt(B))} poz. ${unlockAt(B)}.`}</p>`;continue}
@@ -1113,15 +1135,37 @@ function renderArmy(){tabs([['army','🪖 Armia'],['def','🛡️ Obrona'],['uni
       <p class="note">Przycisk −1 zwalnia jednostkę (bez zwrotu kosztów), by zrobić miejsce na lepsze wojsko. Wojsko wysłane na wyprawę nie broni wioski. Odparty najazd daje łup i doświadczenie.</p>`}
   else{h+=`<div class="li" style="display:block;text-align:center"><b style="font:400 16px Lilita One">Kto kogo pokonuje?</b><div style="font:400 15px Lilita One;margin-top:6px;line-height:1.7">🗡️ Piechota ➜ rozbija 🐎 Jazdę<br>🐎 Jazda ➜ rozbija 🏹 Strzelców<br>🏹 Strzelcy ➜ rozbijają 🗡️ Piechotę</div><p class="note">Silniejszy typ zadaje 1,5× obrażeń, słabszy tylko 0,67×. Włócznicy mają aż ×2 przeciw jeździe.</p></div>`;
     h+=Object.entries(UNITS).map(([u,X])=>{const bl=maxL(X.b),lock=bl<X.bl;return `<div class="li ${lock?'lock':''}"><div class="ic">${X.e}</div><div class="tx"><b>${X.n}</b><span class="tag ${X.cls}">${CLS[X.cls].n}</span>siła ${X.pow} · ${X.h} miejsc<br>${X.d}${lock?`<br>🔒 ${DEF[X.b].n} poz. ${X.bl}`:''}</div></div>`}).join('')}
-  setPB(h,pb=>{pb.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{trainUnit(b.dataset.u,+b.dataset.n);renderArmy()});pb.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const u=b.dataset.x;if(S.army[u]>0){S.army[u]--;dirty=true;sync();sfx('tap');toast(UNITS[u].e+' Jednostka zwolniona — zwolniło się miejsce')}renderArmy()})})}
+  setPB(h,pb=>{const ar=pb.querySelector('#aRaid');if(ar)ar.onclick=()=>{armyTab='def';$('#pB').dataset.h='';renderArmy()};pb.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{trainUnit(b.dataset.u,+b.dataset.n);renderArmy()});pb.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const u=b.dataset.x;if(S.army[u]>0){S.army[u]--;dirty=true;sync();sfx('tap');toast(UNITS[u].e+' Jednostka zwolniona — zwolniło się miejsce')}renderArmy()})})}
 /* Cele */
 function openGoals(){openPanel('Cele i zadania','goals',renderGoals)}
 function renderGoals(){let h=`<div class="stat"><span>Ukończone zadania</span><b>${S.q} / ${QUESTS.length}</b></div>`,lastCh=-1;
   QUESTS.forEach((q,i)=>{if(i>S.q+3)return;if(q.ch!==lastCh){lastCh=q.ch;h+=`<div class="chap"><span>${CHAPTERS[q.ch]}</span></div>`}
     const[a,b]=i<S.q?[1,1]:q.p(),done=i<S.q,cur=i===S.q,ok=cur&&a>=b;
-    h+=`<div class="li ${cur?'cur':''} ${i>S.q?'lock':''}"><div class="ic">${done?'✅':cur?'📜':'🔒'}</div><div class="tx"><b>${i>S.q?'Następne zadanie':q.t}</b>${done?'Ukończone':`Nagroda: ${costTxt(q.r)}`}${cur?`<div class="qbar"><i style="width:${Math.min(1,a/b)*100}%"></i></div>${Math.min(a,b)}/${b}`:''}</div>${ok?'<button class="btn y s" id="gClaim">Odbierz</button>':cur&&q.nav?`<button class="btn s" id="gGo">Idź</button>`:''}</div>`});
+    h+=`<div class="li ${cur?'cur':''} ${i>S.q?'lock':''}"><div class="ic">${done?'✅':cur?'📜':'🔒'}</div><div class="tx"><b>${i>S.q?'Następne zadanie':q.t}</b>${done?'Ukończone':`Nagroda: ${costTxt(q.r)}`}${cur?`<div class="qbar"><i style="width:${Math.min(1,a/b)*100}%"></i></div>${Math.min(a,b)}/${b}`:''}</div>${ok?'<button class="btn y s" id="gClaim">Odbierz</button>':cur&&GO[i]?`<button class="btn s" id="gGo">Pokaż</button>`:''}</div>`});
   h+=`<p class="note">Zadania prowadzą przez grę — każde daje nagrodę. Rozdziały odblokowują się wraz z rozwojem osady.</p>`;
-  setPB(h,pb=>{const c=pb.querySelector('#gClaim');if(c)c.onclick=()=>{claimQuest();renderGoals()};const g=pb.querySelector('#gGo');if(g)g.onclick=()=>{nav(QUESTS[S.q].nav)}})}
+  setPB(h,pb=>{const c=pb.querySelector('#gClaim');if(c)c.onclick=()=>{claimQuest();renderGoals()};const g=pb.querySelector('#gGo');if(g)g.onclick=()=>goTo(GO[S.q])})}
+
+/* ---------- „Pokaż” — prowadzi prosto do elementu ---------- */
+let HL={act:null,arrow:null},camFly=null;
+function flyTo(p,d){camFly={from:cam.t.clone(),to:new V3(clamp(p.x,-18,18),0,clamp(p.z,-18,18)),d0:cam.d,d1:d||Math.min(cam.d,17),t0:performance.now()};intro=null}
+function pointAt(pos,act){HL.arrow={pos:pos.clone(),until:Date.now()+6000};HL.act=act||null}
+function focusB(b,act){closePanel();if(MAP.open)closeMap();if(PL)endPlace();const p=bPos(b);flyTo(p);pointAt(p.clone().setY((LH[b.t]||1.5)+.9),act);setTimeout(()=>{select({k:'b',id:b.id})},450)}
+function hlSel(sel,scroll){setTimeout(()=>{const el=document.querySelector(sel);if(el){el.classList.add('hl');if(scroll)el.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>el.classList.remove('hl'),6000)}},150)}
+function goTo(g){if(!g)return;const[k,a]=g;audioInit();
+  if(k==='col'){const bs=S.b.filter(b=>b.t===a&&b.l>=1).sort((x,y)=>stored(y)-stored(x));if(bs[0])return focusB(bs[0],'Zbierz');return goTo(['build',a])}
+  if(k==='build'){const pend=S.b.find(b=>b.t===a&&b.job);if(pend)return focusB(pend,'Ukończ');
+    if(cntAll(a)>=allowed(a)){toast('Limit tego budynku — najpierw ulepsz '+hallName(hallL()));return goTo(['up','hall'])}
+    deselect();if(MAP.open)closeMap();shopCat=DEF[a].cat;openBuild();return hlSel('.card[data-t="'+a+'"]',true)}
+  if(k==='up'){const b=S.b.filter(x=>x.t===a).sort((x,y)=>x.l-y.l)[0];if(!b)return goTo(['build',a]);return focusB(b,b.job?'Ukończ':'Ulepsz')}
+  if(k==='obs'){const o=S.obs.filter(o=>unl(o.i,o.j)).sort((x,y)=>oPos(x).distanceTo(cam.t)-oPos(y).distanceTo(cam.t))[0];if(!o){toast('Brak przeszkód w osadzie — powiększ teren');return goTo(['land'])}
+    closePanel();const p=oPos(o);flyTo(p);pointAt(p.clone().setY(1.6),'Usuń');setTimeout(()=>select({k:'o',id:o.id}),450);return}
+  if(k==='land'){deselect();if(MAP.open)closeMap();shopCat='land';openBuild();return hlSel('#bLand')}
+  if(k==='train'){const X=UNITS[a];if(!cnt(X.b))return goTo(['build',X.b]);const B=S.b.find(b=>b.t===X.b&&b.l>=1);if(B.l<X.bl)return goTo(['up',X.b]);
+    deselect();if(MAP.open)closeMap();armyTab='army';openArmy('army');return hlSel('[data-u="'+a+'"][data-n="1"]',true)}
+  if(k==='bs'){const b=S.b.find(x=>x.t==='barracks');if(!b)return goTo(['build','barracks']);if(b.l<2)return goTo(['up','barracks']);return goTo(['train','s'])}
+  if(k==='raid'){if(!cnt('barracks'))return goTo(['build','barracks']);deselect();openArmy('def');return}
+  if(k==='map'){openMap();const now=Date.now(),c=S.world.sites.filter(s=>s.lvl>=a&&!(s.cool>now)).sort((x,y)=>x.lvl-y.lvl||Math.hypot(x.x-HOME.x,x.y-HOME.y)-Math.hypot(y.x-HOME.x,y.y-HOME.y))[0];
+    if(c){MAP.sel=c.id;MAP.v.x=(c.x+HOME.x)/2;MAP.v.y=(c.y+HOME.y)/2;MAP.flash={id:c.id,until:now+6000};drawMapCard();hlSel('#mAtk')}}}
 function claimQuest(){const q=QUESTS[S.q];if(!q||!qDone(q))return;for(const[r,v]of Object.entries(q.r))gain(r,v);addXP(8);S.q++;sfx('chest');dirty=true;
   const rc=$('#quest').getBoundingClientRect();Object.keys(q.r).forEach(r=>r!=='gems'&&flyRes(r,rc.left+rc.width/2,rc.top+rc.height/2,q.r[r]));$('#quest').dataset.k='';hud()}
 /* Menu */
@@ -1159,39 +1203,31 @@ document.querySelectorAll('.nb').forEach(b=>b.onclick=()=>nav(b.dataset.n));
 /* =====================================================================
    HUD & FX
 ===================================================================== */
-$('#bars').innerHTML=Object.entries(RES).map(([k,r])=>`<div class="rbar" id="r-${k}"><div class="f" style="background:${r.c}"></div><span class="m"></span><span class="v ol">0</span><span class="i">${r.e}</span></div>`).join('')+
-  `<div class="rbar" id="r-gems"><div class="f" style="background:linear-gradient(#b8ffb0,#3fc24a);transform:none"></div><span class="v ol">0</span><span class="i">💎</span></div>`;
+$('#bars').innerHTML=Object.entries(RES).map(([k,r])=>`<div class="res" id="r-${k}" data-r="${k}"><span class="i">${r.e}</span><span class="v">0</span><i class="c"><b style="background:${r.c}"></b></i></div>`).join('')+
+  `<div class="res" id="r-gems"><span class="i">💎</span><span class="v">0</span></div><div class="res" id="bld"><span class="i">👷</span><span class="v">1/1</span></div>`;
+document.querySelectorAll('.res[data-r]').forEach(el=>el.onclick=()=>{const k=el.dataset.r;toast(`${RES[k].e} ${RES[k].n}: ${fmt(S.res[k])} / ${fmt(capOf(k))}${S.res[k]>=capOf(k)?' — magazyn pełny!':''}`)});
+$('#r-gems').onclick=()=>toast('💎 Klejnoty — przyspieszają budowy. Zdobywasz je za zadania, najazdy i łupy.');
+$('#bld').onclick=()=>toast(`👷 Budowniczowie: ${freeB()} wolnych z ${builders()}. Więcej chat = więcej budów naraz.`);
+$('#plvw').onclick=()=>toast(`⭐ Poziom ${S.lvl} · ${hallName(hallL())} poz. ${hallL()} · XP ${S.xp}/${xpNeed(S.lvl)}`);
 const shown={};
 function hud(){
   for(const k in RES){const el=$('#r-'+k),cp=capOf(k);shown[k]=shown[k]==null?S.res[k]:shown[k]+(S.res[k]-shown[k])*.25;if(Math.abs(shown[k]-S.res[k])<1)shown[k]=S.res[k];
-    el.querySelector('.v').textContent=fmt(shown[k]);el.querySelector('.f').style.transform=`scaleX(${Math.min(1,S.res[k]/cp)})`;el.querySelector('.m').textContent='max '+fmt(cp)}
+    el.querySelector('.v').textContent=fmt(shown[k]);el.querySelector('.c b').style.transform=`scaleX(${Math.min(1,S.res[k]/cp)})`;el.classList.toggle('full',S.res[k]>=cp)}
   $('#r-gems .v').textContent=fmt(S.gems);
-  $('#plv').textContent=S.lvl;$('#pxp').style.transform=`scaleX(${Math.min(1,S.xp/xpNeed(S.lvl))})`;$('#pname').textContent=hallName(hallL())+' · poz. '+hallL();
-  $('#bld').textContent=`👷 ${freeB()}/${builders()} wolnych`;
-  // threat
-  const th=$('#threat'),rs=raidsOn()?raidState():null,now=Date.now();let cls='threat',tt,ts;
-  if(RA){cls+=' danger hot';tt='⚔️ Trwa bitwa!';ts=RA.R.name}
-  else if(!raidsOn()){tt='🕊️ Spokój';ts='Najazdy zaczną się w Rozdziale II'}
-  else if(rs){const left=rs.left;cls+=rs.lvl==='good'?'':rs.lvl==='mid'?' warn':' danger';if(left<60)cls+=' hot';
-    tt=`${rs.lvl==='good'?'🛡️':'⚠️'} Najazd za ${ft(left)}`;ts=`${S.raid.name} · 👹${rs.ee} vs 🛡️${rs.pe}`}
-  else{tt='🛡️ Obrona';ts='…'}
-  let mr='';if(S.marches.length){const m=S.marches.reduce((a,b)=>((a.ph==='go'?a.ta:a.tb)<(b.ph==='go'?b.ta:b.tb)?a:b));const s=site(m.sid);mr=`<div class="mr">🗺️ ${m.ph==='go'?'Atak na '+s.name:'Powrót z '+s.name} · ${ft(((m.ph==='go'?m.ta:m.tb)-now)/1000)}${S.marches.length>1?` (+${S.marches.length-1})`:''}</div>`}
-  const html=`<div class="tt">${tt}</div><div class="ts">${ts}</div>${mr}`;if(th.innerHTML!==html)th.innerHTML=html;if(th.className!==cls)th.className=cls;
-  // quest
-  const q=QUESTS[S.q],qe=$('#quest');
-  if(!q){qe.style.display='none'}else{const[a,b]=q.p(),ok=a>=b,key=S.q+'|'+ok+'|'+Math.min(a,b);if(qe.dataset.k!==key){qe.dataset.k=key;
-    qe.className='quest'+(ok?' done':'');qe.innerHTML=`<div class="qt"><span>📜 ${CHAPTERS[q.ch].split(' · ')[0]} · zadanie ${S.q+1}</span><span class="qx">${Math.min(a,b)}/${b}</span></div>${q.t}<div class="qbar"><i style="width:${Math.min(1,a/b)*100}%"></i></div><div class="qr">Nagroda: ${costTxt(q.r)}</div>${ok?'<button class="btn y">Odbierz nagrodę</button>':''}`;
-    const bt=qe.querySelector('button');if(bt)bt.onclick=e=>{e.stopPropagation();claimQuest()}}}
-  // nav badges
+  $('#plv').textContent=S.lvl;$('#pxp').style.transform=`scaleX(${Math.min(1,S.xp/xpNeed(S.lvl))})`;
+  $('#bld .v').textContent=`${freeB()}/${builders()}`;
+  const rs=raidsOn()?raidState():null;
+  const q=QUESTS[S.q],qe=$('#quest'),ok=!!(q&&qDone(q));
+  if(ok){const key='q'+S.q;if(qe.dataset.k!==key){qe.dataset.k=key;qe.innerHTML=`<div class="ic">✅</div><div class="tx"><b>Zadanie wykonane!</b>${q.t}<br>Nagroda: ${costTxt(q.r)}</div><button class="btn y s">Odbierz</button>`;
+    qe.querySelector('button').onclick=e=>{e.stopPropagation();claimQuest()};sfx('chest')}qe.classList.toggle('on',!PANEL&&!MAP.open&&!PL)}
+  else{qe.classList.remove('on');qe.dataset.k=''}
   const canBuild=freeB()>0&&Object.keys(DEF).some(t=>DEF[t].cat!=='x'&&DEF[t].cat!=='dec'&&cntAll(t)<allowed(t)&&canPay(newCost(t)));
   $('#dBuild').classList.toggle('on',canBuild);
-  $('#dArmy').classList.toggle('on',!!(rs&&rs.lvl==='bad'));
-  $('#dMap').classList.toggle('on',!!MAP.news);
-  $('#dGoals').classList.toggle('on',!!(q&&qDone(q)));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.toggle('pulse',!!(q&&!qDone(q)&&q.nav===b.dataset.n&&S.q<16)));
+  const hot=!!(RA||rs&&(rs.lvl==='bad'||rs.left<60));$('#dArmy').classList.toggle('on',hot);$('#dArmy').textContent=RA?'⚔️':rs&&rs.left<60?ft(rs.left):'!';
+  $('#dMap').classList.toggle('on',!!MAP.news||S.marches.length>0);$('#dMap').textContent=S.marches.length||'!';
+  $('#dGoals').classList.toggle('on',ok);document.querySelector('.nb[data-n=goals]').classList.toggle('pulse',!ok&&S.q<6&&!PANEL);
 }
 $('#quest').onclick=()=>{audioInit();openGoals()};
-$('#threat').onclick=()=>{audioInit();openArmy('def')};
 function toScreen(v){const p=v.clone().project(camera);return{x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight,vis:p.z<1}}
 function flyRes(r,x,y,n){const tg=$('#r-'+r).getBoundingClientRect(),tx=tg.right-4,ty=tg.top+tg.height/2;popTxt('+'+fmt(n),x,y-30);
   for(let i=0;i<Math.min(7,2+n/20);i++){const f=document.createElement('div');f.className='fly';f.textContent=RES[r].e;const ox=(Math.random()-.5)*50,oy=(Math.random()-.5)*30;
@@ -1219,6 +1255,7 @@ function labels(){const now=Date.now();
   for(const o of S.obs){const k='o'+o.id;if(!o.job){if(labs[k])removeLab(k);continue}setLab(k,`<div class="tmr">🪓 ${ft((o.job.end-now)/1000)}</div>`,oPos(o).setY(1.3))}
   const gk=new Set();if(!RA)for(const g of Object.values(people.groups)){const k='g'+g.b.id;gk.add(k);const c=bPos(g.b),s=DEF[g.b.t].s;setLab(k,`<div class="chip">🪖 ${g.total} ${g.total>g.list.length?'(+'+(g.total-g.list.length)+')':''}</div>`,new V3(c.x+1.35,1.1,c.z+s/2+.6))}
   for(const k in labs)if(k[0]==='g'&&!gk.has(k))removeLab(k);
+  if(HL.arrow&&Date.now()<HL.arrow.until)setLab('arrow','<div class="arrow">⬇️</div>',HL.arrow.pos);else if(labs.arrow){removeLab('arrow');HL.arrow=null}
   if(PL){const s=toScreen(PL.g.position.clone().setY(DEF[PL.t].s*.7+1.1));$('#plc').style.transform=`translate(${s.x}px,${s.y}px) translate(-50%,-100%)`}}
 
 /* =====================================================================
@@ -1259,6 +1296,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(.05,clock.getDel
     if(Math.random()<.025)sfx('bird');hud();if(SEL)drawSel();if(PANEL&&['army','goals','build'].includes(PANEL.kind))PANEL.render();if(MAP.open)drawMapCard();tickTimers();
     if(dirty){dirty=false;save()}}
   if(MAP.open)return;
+  if(camFly){const k=Math.min(1,(now-camFly.t0)/700),e=k*k*(3-2*k);cam.t.lerpVectors(camFly.from,camFly.to,e);cam.d=camFly.d0+(camFly.d1-camFly.d0)*e;if(k>=1)camFly=null}
   if(intro){const k=Math.min(1,(now-intro.t0)/2600),e=1-Math.pow(1-k,3);cam.d=intro.d0+(22-intro.d0)*e;cam.yaw=intro.y0+(Math.PI/4-intro.y0)*e;if(k>=1)intro=null}
   updCam();
   const wp=water.geometry.attributes.position,base=water.userData.base;for(let i=0;i<wp.count;i++){const x=base[i*3],z=base[i*3+2];wp.array[i*3+1]=Math.sin(x*.35+T*1.2)*.07+Math.cos(z*.3+T*.9)*.07}wp.needsUpdate=true;
