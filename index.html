@@ -166,7 +166,7 @@ h4{font:400 17px "Lilita One";margin:10px 0 7px}
 </div>
 <div class="hud tr" id="bars"></div>
 <div class="hud bl">
-  <div class="big sm" id="bSnd">🔊<small>Dźwięk</small></div>
+  <div class="big sm" id="bSnd">⚙️<small>Opcje</small></div>
   <div class="big war" id="bWar" style="display:none">⚔️<small class="ol">Wyprawy</small><span class="dot" id="dWar"></span></div>
 </div>
 <div class="hud br"><div class="big" id="bShop">🛒<small class="ol">Sklep</small><span class="dot" id="dShop">!</span></div></div>
@@ -272,10 +272,17 @@ function fresh(){
   }
   return s;
 }
-let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+let S;const readLS=k=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&v.b?v:null}catch(e){return null}};
+S=readLS(KEY);const bak=readLS(KEY+'.bak');if(bak&&(!S||(bak.last||0)>(S.last||0)))S=bak;
+/* kopia w IndexedDB — gdyby przeglądarka wyczyściła localStorage */
+const IDB={db:null,ok:false,open(){return new Promise(r=>{try{const q=indexedDB.open('osada',1);q.onupgradeneeded=()=>q.result.createObjectStore('kv');q.onsuccess=()=>{this.db=q.result;r(this.db)};q.onerror=()=>r(null)}catch(e){r(null)}})},
+  put(v){if(!this.db||!this.ok)return;try{this.db.transaction('kv','readwrite').objectStore('kv').put(v,KEY)}catch(e){}},
+  get(){return new Promise(r=>{if(!this.db)return r(null);try{const q=this.db.transaction('kv').objectStore('kv').get(KEY);q.onsuccess=()=>r(q.result||null);q.onerror=()=>r(null)}catch(e){r(null)}})}};
+IDB.open().then(async()=>{const j=await IDB.get();IDB.ok=true;if(!j)return;try{const v=JSON.parse(j);if(v&&v.b&&(!S||!S.started||(v.last||0)>(S.last||0)+3000)&&v.started){window.__restoring=1;try{localStorage.setItem(KEY,j);localStorage.setItem(KEY+'.bak',j)}catch(e){}location.reload()}}catch(e){}});
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 if(!S||!S.b)S=fresh();
 let dirty=true;
-function save(){S.last=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+let lastSave=0;function save(){if(!S||window.__restoring)return;S.last=Date.now();if(!S.started&&(S.q>0||S.st.col_food))S.started=1;const j=JSON.stringify(S);try{localStorage.setItem(KEY,j);localStorage.setItem(KEY+'.bak',j)}catch(e){}if(S.started)IDB.put(j);lastSave=Date.now()}
 
 const hallL=()=>S.b.find(b=>b.t==='hall').l;
 const cnt=t=>S.b.filter(b=>b.t===t&&b.l>=1).length;
@@ -914,8 +921,21 @@ let bt;function banner(a,b){$('#bnT').textContent=a;$('#bnP').textContent=b||'';
 $('#raidP').onclick=()=>{audioInit();if(cnt('barracks'))openTrain();else toast('Zbuduj Koszary, by szkolić obrońców')};
 $('#bShop').onclick=()=>{audioInit();deselect();openShop()};
 $('#bWar').onclick=()=>{audioInit();openExp()};
-$('#bSnd').onclick=()=>{S.snd=S.snd?0:1;$('#bSnd').innerHTML=(S.snd?'🔊':'🔇')+'<small>Dźwięk</small>';audioInit();sfx('tap');dirty=true};
-$('#bSnd').innerHTML=(S.snd?'🔊':'🔇')+'<small>Dźwięk</small>';
+$('#bSnd').onclick=()=>{audioInit();openSettings()};
+async function packSave(){save();const j=JSON.stringify(S);try{if(window.CompressionStream){const b=await new Response(new Blob([j]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();let t='';new Uint8Array(b).forEach(x=>t+=String.fromCharCode(x));return 'OSADA1:'+btoa(t)}}catch(e){}return 'OSADA0:'+btoa(unescape(encodeURIComponent(j)))}
+async function unpackSave(code){code=code.trim();if(code.startsWith('OSADA1:')){const bin=atob(code.slice(7)),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return JSON.parse(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}
+  if(code.startsWith('OSADA0:'))return JSON.parse(decodeURIComponent(escape(atob(code.slice(7)))));throw new Error('zły kod')}
+function openSettings(){openPanel('Opcje','set',()=>{const ago=Math.round((Date.now()-lastSave)/1000);
+  $('#pB').innerHTML=`<div class="li"><div class="ic">${S.snd?'🔊':'🔇'}</div><div class="tx"><b>Dźwięk</b>${S.snd?'Włączony':'Wyłączony'}</div><button class="btn y" id="sSnd">${S.snd?'Wycisz':'Włącz'}</button></div>
+  <div class="li"><div class="ic">💾</div><div class="tx"><b>Zapis automatyczny</b>Gra zapisuje się sama co chwilę na tym urządzeniu. Ostatni zapis: ${ago<2?'przed chwilą':ago+' s temu'}.</div></div>
+  <h4>Przenieś postęp</h4><p style="font-size:13px;color:#5a4428;margin-bottom:8px">Safari, Chrome i ikona na ekranie głównym mają <b>osobne zapisy</b>. Skopiuj kod tutaj i wklej go tam, gdzie chcesz grać dalej.</p>
+  <div class="row"><button class="btn" style="flex:1" id="sCopy">📋 Kopiuj kod zapisu</button><button class="btn y" style="flex:1" id="sLoad">📥 Wczytaj kod</button></div>
+  <textarea id="sCode" placeholder="Tu wklej kod zapisu (OSADA1:…)" style="width:100%;height:70px;margin-top:10px;border:3px solid var(--ink);border-radius:12px;padding:8px;font:12px monospace;resize:none;user-select:text;-webkit-user-select:text"></textarea>
+  <h4 style="margin-top:14px">Niebezpieczne</h4><button class="btn r" id="sNew" style="width:100%">Zacznij od nowa</button>`;
+  $('#sSnd').onclick=()=>{S.snd=S.snd?0:1;dirty=true;sfx('tap');openSettings()};
+  $('#sCopy').onclick=async()=>{const c=await packSave();$('#sCode').value=c;try{await navigator.clipboard.writeText(c);toast('📋 Kod skopiowany — wklej go w innej przeglądarce')}catch(e){$('#sCode').select();toast('Zaznacz i skopiuj kod z pola poniżej')}};
+  $('#sLoad').onclick=async()=>{const c=$('#sCode').value;if(!c.trim())return toast('Najpierw wklej kod w pole');try{const v=await unpackSave(c);if(!v||!v.b)throw 0;dialog('Wczytać zapis?',`<p style="text-align:center">Wczytasz osadę z poziomem siedziby ${v.b.find(b=>b.t==='hall').l}. Obecny postęp na tym urządzeniu zostanie zastąpiony.</p>`,[['Anuluj',openSettings],['Wczytaj',()=>{v.last=Date.now();v.started=1;S=v;save();IDB.put(JSON.stringify(v));window.__restoring=1;location.reload()},'y']])}catch(e){toast('❌ Nieprawidłowy kod zapisu');sfx('err')}};
+  $('#sNew').onclick=()=>dialog('Na pewno?','<p style="text-align:center">Cała osada zostanie usunięta i zaczniesz od skromnej zagrody. Tego nie da się cofnąć.</p>',[['Anuluj',openSettings],['Usuń i zacznij',()=>{S=fresh();S.started=1;save();IDB.put(JSON.stringify(S));window.__restoring=1;location.reload()},'r']])})}
 
 /* labels over buildings */
 const labs={};
@@ -1032,7 +1052,9 @@ function chestDialog(){const k=chest,h=hallL(),r={food:80*k*h,wood:80*k*h};if(h>
 if(away>2||notes.length)setTimeout(()=>dialog('Witaj z powrotem!',`<div class="dlg-c"><div style="font-size:64px">🌅</div><p>Nie było cię ${away>90?Math.round(away/60)+' godz':Math.round(away)+' min'}.</p>${notes.map(n=>`<div class="stat" style="display:block;text-align:left">${n}</div>`).join('')}<p>Surowce czekają w dymkach nad budynkami — dotknij, by zebrać!</p></div>`,[[chest?'Dalej':'Do dzieła!',()=>{closePanel();if(chest)setTimeout(chestDialog,250)},'y']]),900);
 else if(chest)setTimeout(chestDialog,900);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
-setInterval(save,5000);
+addEventListener('pagehide',save);addEventListener('beforeunload',save);document.addEventListener('freeze',save);
+setInterval(save,3000);
+if(/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|Line\/|TikTok|Snapchat|; wv\)/i.test(navigator.userAgent))setTimeout(()=>dialog('Otwórz w przeglądarce',`<div class="dlg-c"><div style="font-size:60px">⚠️</div><p>Grasz w okienku aplikacji (Messenger / Instagram / Facebook). Takie okienko <b>kasuje zapis gry</b> po zamknięciu.</p><p>Dotknij <b>⋯</b> lub <b>⋮</b> w rogu i wybierz <b>„Otwórz w przeglądarce”</b> (Safari / Chrome).</p></div>`,[['Rozumiem',closePanel,'y']]),1600);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
