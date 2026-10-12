@@ -1128,7 +1128,7 @@ function applyRaid(R){const txt=[];
   const wd=woundUnits(R.unitLoss);
   if(R.win){for(const r in R.loot){const g=gain(r,R.loot[r]);if(g)txt.push(`${ICON(r)} +${fmt(g)}`)}if(R.gems){S.gems+=R.gems;txt.push(`💎 +${R.gems}`)}S.st.raidWin=(S.st.raidWin||0)+1;addXP(5+totalE(R.E))}
   else{for(const r in R.loss){const v=Math.min(S.res[r],R.loss[r]);S.res[r]-=v;if(v)txt.push(`${RES[r].e} −${fmt(v)}`)}S.st.raidLose=(S.st.raidLose||0)+1}
-  S.raidN=(S.raidN||0)+1;S.raidK=R.win?raidK()+1:Math.max(0,raidK()-2);S.raidH=hallL();S.raidP=null;S.raid=null;rollRaid(420+Math.random()*300);dirty=true;people.sKey=null;
+  S.raidN=(S.raidN||0)+1;S.raidK=R.win?raidK()+1:Math.max(0,raidK()-2);S.raidH=hallL();S.raidP=null;S.raid=null;rollRaid(900+Math.random()*900);dirty=true;people.sKey=null;
   return{txt,wd,lost:Object.entries(R.unitLoss).filter(x=>x[1]).map(([u,n])=>`${UNITS[u].e} −${n-(wd[u]||0)}`).filter(x=>!x.endsWith('−0'))}}
 function raidReport(R,res){return `<div class="dlg-c"><div style="font-size:60px">${R.win?'🏆':'🔥'}</div><h4>${R.win?'Wioska obroniona!':'Barbarzyńcy splądrowali wioskę'}</h4></div>
   <div class="stat"><span>${R.name}</span><b>${mixTxt(R.E)}</b></div><div class="stat"><span>Siła wroga (po kontrach)</span><b>${R.ee}</b></div><div class="stat"><span>Twoja obrona (po kontrach)</span><b>${R.pe}</b></div>
@@ -1136,7 +1136,7 @@ function raidReport(R,res){return `<div class="dlg-c"><div style="font-size:60px
   ${R.win?'':`<p class="note">${counterTip(R.E)}</p>`}`}
 function raidTick(){if(RA||!raidsOn())return;
   if(S.raidP){const R=S.raidP,res=applyRaid(R);dialog(R.win?'Najazd odparty':'Najazd',raidReport(R,res),[['OK',closePanel,'y']]);return}
-  if(!S.raid){rollRaid((S.st.raidWin||S.st.raidLose)?420:90);return}
+  if(!S.raid){rollRaid((S.st.raidWin||S.st.raidLose)?900:90);return}
   const left=(S.raid.at-Date.now())/1000;
   if(left<=0)startRaid();else if(left<=45&&!S.raid.warned){S.raid.warned=1;sfx('horn');toast(`⚠️ ${S.raid.name} nadciąga! Przygotuj obronę`)}}
 function startRaid(){const R=resolveRaid();S.raidP=R;save();deselect();endPlace();if(MAP.open)closeMap();if(PANEL&&PANEL.kind!=='dlg')closePanel();
@@ -1625,7 +1625,7 @@ function hud(){
   else{qe.classList.remove('on');qe.dataset.k=''}
   const nb=newBuild();$('#dBuild').classList.toggle('on',nb.length>0);$('#dBuild').textContent='Nowe';
   if(nb.length&&S.q>1)hint('newb','🔨','Nowe budynki!','Plakietka „Nowe” na Budowaniu oznacza, że odblokowałeś budynek, którego jeszcze nie oglądałeś.');
-  const rsE=$('#rstrip');if(rs&&!RA&&!PANEL&&!MAP.open){const L=rs.left;rsE.className='rstrip on '+(rs.lvl==='good'?'':rs.lvl)+(L<60?' hot':'');
+  const rsE=$('#rstrip');if(rs&&rs.left<300&&!RA&&!PANEL&&!MAP.open){const L=rs.left;rsE.className='rstrip on '+(rs.lvl==='good'?'':rs.lvl)+(L<60?' hot':'');
     rsE.innerHTML=`<b>⚔️ ${ft(L)}</b><span>Najazd: ${S.raid.name}${isNight(S.raid.at)&&!cnt('magetower')?' 🌙':''} · wróg ${rs.ee} vs obrona ${rs.pe} — ${rs.lvl==='good'?'jesteś gotowy ✔':rs.lvl==='mid'?'wyrównane siły':'za słaba obrona!'}</span><b>›</b>`;
     hint('raid','⚔️','Nadciąga najazd!','Pasek u góry odlicza czas do ataku barbarzyńców. Zielony = obrona wystarczy, żółty = wyrównane, czerwony = za słaba. Dotknij go, by wzmocnić obronę.')}
   else if(RA&&!PANEL){rsE.className='rstrip on bad hot';rsE.innerHTML='<b>⚔️ Trwa bitwa!</b><span>'+RA.R.name+'</span>'}else rsE.className='rstrip';
