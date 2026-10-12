@@ -128,6 +128,7 @@ body.visit .visitbar{display:flex}body.visit .topbar,body.visit .nav,body.visit 
 .plc{position:fixed;left:0;top:0;z-index:9;display:none;gap:14px}
 .plc.on{display:flex}
 .plc button{width:54px;height:54px;border-radius:50%;border:3px solid var(--ink);font-size:24px;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.35)}
+.plc .rot{background:radial-gradient(circle at 40% 30%,#fff7df,#e8d3a1);font-weight:800}
 .plc .ok{background:radial-gradient(circle at 40% 30%,#c9f7a8,#4fae2a)}
 .plc .no{background:radial-gradient(circle at 40% 30%,#ffb3a8,#d8392b)}
 .plc .ok:disabled{filter:grayscale(1);opacity:.6}
@@ -251,7 +252,7 @@ textarea,input{user-select:text;-webkit-user-select:text}
 </nav>
 
 <div class="sel" id="sel"><div class="nm ol" id="selN"></div><div class="inf" id="selI"></div><div class="acts" id="acts"></div></div>
-<div class="plc" id="plc"><button class="no" id="plNo">✖</button><button class="ok" id="plOk">✔</button></div>
+<div class="plc" id="plc"><button class="no" id="plNo">✖</button><button class="rot" id="plRot">↻</button><button class="ok" id="plOk">✔</button></div>
 <div class="plhint" id="plhint"></div>
 
 <div class="mapv" id="map"><canvas id="mc"></canvas>
@@ -916,7 +917,7 @@ function sync(){
       const A=ANIM[b.t];if(A&&b.l>=1){const n=A.n(b.l);for(let k=0;k<n;k++){const m=A.mk();let x,z;do{x=(Math.random()*2-1)*A.r;z=(Math.random()*2-1)*A.r}while(!A.ok(x,z));m.position.set(x,.04,z);m.rotation.y=Math.random()*6;r.root.add(m);r.anim.push({m,tx:x,tz:z,w:Math.random()*3})}}
       if(b.t==='hospital'&&b.l>=1){const nw=Math.min(3,nUnits(S.wounded)+S.heal.length);for(let k=0;k<nw;k++){const f=person(['#8a6a3a','#9aa4ad','#3f8a3a'][k]);f.rotation.x=-Math.PI/2;f.position.set(-.55+k*.55,.2,.72);f.scale.setScalar(1.05);r.root.add(f)}}
       if(wasBuilt)r.pop=performance.now()}
-    r.root.position.copy(bPos(b));r.root.visible=!(PL&&PL.id===b.id);const dc=DEF[b.t].cat;r.root.scale.setScalar(dc==='dec'||b.t==='wall'||b.t==='hut'?1:1+Math.min(.06,.006*(Math.max(1,b.l)-1)))}
+    r.root.position.copy(bPos(b));r.root.rotation.y=(b.rot||0)*Math.PI/2;r.root.visible=!(PL&&PL.id===b.id);const dc=DEF[b.t].cat;r.root.scale.setScalar(dc==='dec'||b.t==='wall'||b.t==='hut'?1:1+Math.min(.06,.006*(Math.max(1,b.l)-1)))}
   for(const k in recs)if(!ids.has(+k)){scene.remove(recs[k].root);picks.splice(picks.indexOf(recs[k].root),1);delete recs[k];removeLab('b'+k)}
   const okey=S.obs.map(o=>o.id).join(',');
   if(okey!==obsKey){obsKey=okey;scene.remove(obsG);obsG=new THREE.Group();const tmp=S.obs.map(o=>{const m=makeMesh(o.t,1,true);m.position.copy(oPos(o));m.rotation.y=(o.id*1.7)%6;return m});mergeStatic(tmp,obsG);scene.add(obsG);
@@ -1034,6 +1035,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
     if(b.t==='market'&&b.l>=1)acts.push(['🔄','Handel','','',()=>openMarket()]);
     if(b.t==='hall')acts.push(['🗺️','Teren','','',()=>{shopCat='land';openBuild()}]);
     acts.push(['✥','Przenieś','','',()=>startPlace(b.t,b.id)]);
+    acts.push(['↻','Obróć','','',()=>{b.rot=((b.rot||0)+1)%4;sync();const r=recs[b.id];if(r)r.pop=performance.now();sfx('place');dirty=true}]);
     if(d.cat==='dec'||b.t==='wall')acts.push(['🗑️','Usuń','','r',()=>{S.b=S.b.filter(q=>q!==b);deselect();sync();dirty=true;sfx('tap')}]);
   }
   $('#selN').textContent=n;$('#selI').textContent=inf;$('#selI').style.display=inf?'':'none';
@@ -1291,19 +1293,20 @@ function startPlace(t,id){deselect();closePanel();if(PL)endPlace(true);
     if(!canPay(newCost(t))){toast('Brakuje surowców');sfx('err');return}
     if(DEF[t].t0&&freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return}}
   const b=id&&S.b.find(q=>q.id===id),g=makeMesh(t,b?b.l:1);scene.add(g);
-  PL={t,id,g,i:0,j:0};if(b){PL.i=b.i;PL.j=b.j}else{const sp=findSpot(t);PL.i=sp[0];PL.j=sp[1]}
+  PL={t,id,g,i:0,j:0,rot:b?b.rot||0:(S.lastRot||0)};g.rotation.y=PL.rot*Math.PI/2;if(b){PL.i=b.i;PL.j=b.j}else{const sp=findSpot(t);PL.i=sp[0];PL.j=sp[1]}
   cells.visible=true;sync();posGhost();$('#plc').classList.add('on');$('#plhint').classList.add('on');sfx('tap')}
 function findSpot(t){const s=DEF[t].s,c=[Math.round(cam.t.x+H-s/2),Math.round(cam.t.z+H-s/2)];
   for(let r=0;r<G;r++)for(let i=c[0]-r;i<=c[0]+r;i++)for(let j=c[1]-r;j<=c[1]+r;j++)if(canPlace(t,i,j))return[i,j];return c}
 function moveGhost(x,z){const s=DEF[PL.t].s,i=clamp(Math.round(x+H-s/2),0,G-s),j=clamp(Math.round(z+H-s/2),0,G-s);if(i!==PL.i||j!==PL.j){PL.i=i;PL.j=j;posGhost();sfx('tick')}}
 function posGhost(){const s=DEF[PL.t].s,x=PL.i-H+s/2,z=PL.j-H+s/2;PL.ok=canPlace(PL.t,PL.i,PL.j,PL.id);PL.g.position.set(x,.15,z);$('#plOk').disabled=!PL.ok;paintCells();
-  const d=DEF[PL.t];$('#plhint').innerHTML=`${PL.id?'Przenoszenie':'Budowa'}: <b>${d.n}</b> (${s}×${s})<br>${PL.ok?'<b>✔ Wolne miejsce</b> — przeciągnij lub dotknij kratki':'<s>✖ Zajęte</s> — czerwone kratki są zajęte'}${PL.id?'':' · '+costTxt(newCost(PL.t))}`}
+  const d=DEF[PL.t];$('#plhint').innerHTML=`${PL.id?'Przenoszenie':'Budowa'}: <b>${d.n}</b> (${s}×${s})<br>${PL.ok?'<b>✔ Wolne miejsce</b> — przeciągnij lub dotknij kratki · ↻ obraca':'<s>✖ Zajęte</s> — czerwone kratki są zajęte'}${PL.id?'':' · '+costTxt(newCost(PL.t))}`}
 function endPlace(silent){if(!PL)return;scene.remove(PL.g);PL=null;cells.visible=false;$('#plc').classList.remove('on');$('#plhint').classList.remove('on');sync()}
+$('#plRot').onclick=()=>{if(!PL)return;PL.rot=(PL.rot+1)%4;PL.g.rotation.y=PL.rot*Math.PI/2;sfx('tick')};
 $('#plNo').onclick=()=>{endPlace();sfx('tap')};
 $('#plOk').onclick=()=>{if(!PL||!PL.ok)return;const{t,id,i,j}=PL;
-  if(id){const b=S.b.find(q=>q.id===id);b.i=i;b.j=j;endPlace();recs[id].pop=performance.now();sfx('place');dirty=true;return}
+  if(id){const b=S.b.find(q=>q.id===id);b.i=i;b.j=j;b.rot=PL.rot;endPlace();recs[id].pop=performance.now();sfx('place');dirty=true;return}
   const c=newCost(t);if(!canPay(c)){toast('Brakuje surowców');return endPlace()}
-  pay(c);const d=DEF[t],b={id:S.nid++,t,i,j,l:d.t0?0:1,t0:Date.now()};if(d.t0)b.job={kind:'build',start:Date.now(),end:Date.now()+d.t0*1000*buildMul()};
+  pay(c);const d=DEF[t],b={id:S.nid++,t,i,j,l:d.t0?0:1,t0:Date.now(),rot:PL.rot};S.lastRot=PL.rot;if(d.t0)b.job={kind:'build',start:Date.now(),end:Date.now()+d.t0*1000*buildMul()};
   S.b.push(b);endPlace();burst(bPos(b));sfx('place');if(!d.t0)setTimeout(()=>sfx('coin'),120);addXP(2);dirty=true;if(!d.t0)recs[b.id].pop=performance.now();
   if((t==='wall'||d.cat==='dec')&&cntAll(t)<allowed(t)&&canPay(newCost(t))){startPlace(t);for(const[a,q]of[[1,0],[0,1],[-1,0],[0,-1]])if(canPlace(t,i+a,j+q)){PL.i=i+a;PL.j=j+q;posGhost();break}}};
 
@@ -1415,7 +1418,7 @@ function renderCreator(){const c=CR;let h=`<img class="crimg" id="crImg" src="${
 const NET={url:'https://pmnrgfgeoccuyvksidgu.supabase.co',key:'sb_publishable_hiWSsAijxE-cjrphmJbHYQ_r-j8T8iL',ok:null,last:0,list:null};
 async function rpc(fn,args,keep){const r=await fetch(NET.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:NET.key,'Content-Type':'application/json'},body:JSON.stringify(args||{}),keepalive:!!keep});if(!r.ok)throw new Error('rpc '+r.status);return r.json()}
 function netId(){if(!S.net){const a=new Uint8Array(24);crypto.getRandomValues(a);S.net={id:(crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g,()=>(Math.random()*16|0).toString(16))),token:[...a].map(b=>b.toString(16).padStart(2,'0')).join(''),share:1};dirty=true}return S.net}
-const snapshot=()=>({b:S.b.filter(b=>b.l>=1).map(b=>[b.t,b.i,b.j,b.l]),land:S.land,army:S.army,hero:{look:S.hero.look},st:{raidWin:S.st.raidWin||0,loots:S.st.loots||0,healed:S.st.healed||0}});
+const snapshot=()=>({b:S.b.filter(b=>b.l>=1).map(b=>[b.t,b.i,b.j,b.l,b.rot||0]),land:S.land,army:S.army,hero:{look:S.hero.look},st:{raidWin:S.st.raidWin||0,loots:S.st.loots||0,healed:S.st.healed||0}});
 async function netPush(keep){if(window.__visit||!S.hero.made||!S.started)return;const n=netId();if(!n.share)return;
   try{await rpc('osada_save',{p_id:n.id,p_token:n.token,p_name:S.hero.name,p_title:titleOf(S.lvl)[1],p_lvl:S.lvl,p_hall:hallL(),p_power:Math.round(unitPow()+homeDef().inf+homeDef().rng),p_raids:S.st.raidWin||0,p_loots:S.st.loots||0,p_snap:snapshot()},keep);NET.ok=true;NET.last=Date.now()}catch(e){NET.ok=false}}
 const agoTxt=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?'teraz online':m<60?m+' min temu':m<1440?Math.round(m/60)+' godz. temu':Math.round(m/1440)+' dni temu'};
@@ -1434,7 +1437,7 @@ let HOMES=null;
 async function visitVillage(id){toast('🚶 Wyruszasz z wizytą…');let row=null;try{row=(await rpc('osada_get',{p_id:id}))[0]}catch(e){}
   if(!row){toast('Nie udało się wczytać tej osady');return}enterVisit(row)}
 function enterVisit(row){if(HOMES)leaveVisit();closePanel();if(MAP.open)closeMap();deselect();if(PL)endPlace();save();HOMES=S;window.__visit=row;
-  const sn=row.snapshot||{},v=fresh();v.b=(sn.b||[]).filter(x=>DEF[x[0]]).map(([t,i,j,l],k)=>({id:900000+k,t,i,j,l,t0:Date.now()}));
+  const sn=row.snapshot||{},v=fresh();v.b=(sn.b||[]).filter(x=>DEF[x[0]]).map(([t,i,j,l,rot],k)=>({id:900000+k,t,i,j,l,rot:rot||0,t0:Date.now()}));
   if(!v.b.some(b=>b.t==='hall'))v.b.push({id:900999,t:'hall',i:13,j:13,l:row.hall||1,t0:Date.now()});
   v.obs=[];v.land=sn.land||0;Object.assign(v.army,sn.army||{});v.hero={name:row.name,look:sn.hero&&sn.hero.look,made:1};v.lvl=row.lvl||1;v.st=sn.st||{};v.world=HOMES.world;v.q=0;S=normalize(v);
   resetPeople();sync();cam.t.set(0,0,0);cam.d=24;document.body.classList.add('visit');
