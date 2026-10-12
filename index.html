@@ -72,19 +72,19 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .tlv b{font-size:14px!important}
 .tlv em{position:absolute;top:1px;right:2px;font-style:normal;font-size:11px;z-index:2}
 .tlv.sp{animation:hlp 1s ease-in-out infinite}
-.tlv{flex:0 0 34px;height:34px;border-radius:10px;border:2px solid var(--ink);background:radial-gradient(circle at 35% 30%,#7cc7ff,#2f7fd0);display:grid;place-items:center;position:relative;overflow:hidden;cursor:pointer}
+.tlv{flex:0 0 34px;height:42px;border-radius:10px;border:2px solid var(--ink);background:radial-gradient(circle at 35% 30%,#7cc7ff,#2f7fd0);display:grid;place-items:center;position:relative;overflow:hidden;cursor:pointer}
 .tlv b{font:800 17px "Baloo 2";position:relative;z-index:1}
 .tlv i{position:absolute;left:0;right:0;bottom:0;height:5px;background:rgba(0,0,0,.45)}
 .tlv u{display:block;height:100%;background:#9fe36a;transform-origin:left;transform:scaleX(0);transition:transform .4s}
 .bars{flex:1;display:flex;gap:4px;min-width:0}
-.res{flex:1;min-width:0;position:relative;height:34px;border-radius:10px;background:rgba(0,0,0,.42);border:2px solid rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:2px;overflow:hidden;cursor:pointer}
-.res .i{font-size:16px;line-height:1;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
-.res .v{font:800 13.5px "Baloo 2";color:#fff;white-space:nowrap}
+.res{flex:1;min-width:0;position:relative;height:42px;flex-direction:column;padding-bottom:3px;border-radius:10px;background:rgba(0,0,0,.42);border:2px solid rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;gap:0;overflow:hidden;cursor:pointer}
+.res .i{font-size:17px;line-height:1.05;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
+.res .v{font:800 12.5px "Baloo 2";line-height:1;color:#fff;white-space:nowrap}
 .res .c{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(0,0,0,.4)}
 .res .c b{display:block;height:100%;transform-origin:left;transform:scaleX(0);transition:transform .35s}
 .res.full .v{color:#ffcf5a}.res.bump{animation:bump .3s}
 @keyframes bump{50%{transform:scale(1.1)}}
-.qdone{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 88px);transform:translate(-50%,-140%);opacity:0;z-index:13;width:min(92vw,380px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.35);padding:8px 10px;display:flex;align-items:center;gap:9px;transition:transform .3s cubic-bezier(.2,1.3,.4,1),opacity .2s;pointer-events:none}
+.qdone{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 96px);transform:translate(-50%,-140%);opacity:0;z-index:13;width:min(92vw,380px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.35);padding:8px 10px;display:flex;align-items:center;gap:9px;transition:transform .3s cubic-bezier(.2,1.3,.4,1),opacity .2s;pointer-events:none}
 .qdone.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .qdone .ic{font-size:30px}.qdone .tx{flex:1;min-width:0;font-size:12.5px;line-height:1.25}.qdone .tx b{display:block;font:800 14px "Baloo 2";color:var(--green-d)}
 .hl{animation:hlp 1s ease-in-out infinite!important;position:relative;z-index:2}
@@ -93,7 +93,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .arrow{font-size:38px;animation:arr .7s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(0,0,0,.4))}
 @keyframes arr{50%{translate:0 -12px}}
 .panel.tall{height:min(86dvh,760px)}
-.rstrip{position:fixed;left:6px;right:6px;top:calc(env(safe-area-inset-top) + 50px);z-index:9;display:none;align-items:center;gap:8px;padding:5px 10px;border-radius:12px;border:2px solid var(--ink);font:800 13px "Baloo 2";color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.3);background:linear-gradient(#4a7a2a,#2f5a1a)}
+.rstrip{position:fixed;left:6px;right:6px;top:calc(env(safe-area-inset-top) + 58px);z-index:9;display:none;align-items:center;gap:8px;padding:5px 10px;border-radius:12px;border:2px solid var(--ink);font:800 13px "Baloo 2";color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.3);background:linear-gradient(#4a7a2a,#2f5a1a)}
 .rstrip.on{display:flex}.rstrip.mid{background:linear-gradient(#c79a2a,#9a6f12)}.rstrip.bad{background:linear-gradient(#d0493a,#9a2a1f)}.rstrip.hot{animation:hlp .8s ease-in-out infinite}
 .rstrip b{font-size:15px}.rstrip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hintb{position:fixed;left:50%;bottom:calc(var(--navh) + env(safe-area-inset-bottom) + 14px);transform:translate(-50%,30px);opacity:0;pointer-events:none;z-index:14;width:min(92vw,400px);background:#fffdf3;border:3px solid var(--ink);border-radius:16px;padding:10px 12px;box-shadow:0 6px 0 rgba(0,0,0,.3);display:flex;gap:10px;align-items:flex-start;transition:.25s}
@@ -1598,7 +1598,7 @@ document.querySelectorAll('.nb').forEach(b=>b.onclick=()=>nav(b.dataset.n));
    HUD & FX
 ===================================================================== */
 $('#bars').innerHTML=Object.entries(RES).map(([k,r])=>`<div class="res" id="r-${k}" data-r="${k}"><span class="i">${r.e}</span><span class="v">0</span><i class="c"><b style="background:${r.c}"></b></i></div>`).join('')+
-  `<div class="res" id="r-gems"><span class="i">💎</span><span class="v">0</span></div><div class="res" id="rarep" style="flex:0 0 44px"><span class="i">🎒</span><span class="v" id="rarev">0</span></div><div class="res" id="bld"><span class="i">👷</span><span class="v">1/1</span></div>`;
+  `<div class="res" id="r-gems"><span class="i">💎</span><span class="v">0</span></div><div class="res" id="rarep" ><span class="i">🎒</span><span class="v" id="rarev">0</span></div><div class="res" id="bld"><span class="i">👷</span><span class="v">1/1</span></div>`;
 document.querySelectorAll('.res[data-r]').forEach(el=>el.onclick=()=>{const k=el.dataset.r;toast(`${RES[k].e} ${RES[k].n}: ${fmt(S.res[k])} / ${fmt(capOf(k))}${S.res[k]>=capOf(k)?' — magazyn pełny!':''}`)});
 $('#rarep').onclick=()=>{audioInit();openRare()};
 function openRare(){dialog('Rzadkie surowce',Object.entries(RARE).map(([k,x])=>`<div class="li"><div class="ic">${x.e}<small>${fmt(S.rare[k])}</small></div><div class="tx"><b>${x.n}: ${fmt(S.rare[k])}</b>Skąd: ${x.d}</div></div>`).join('')+'<p class="note">Rzadkie surowce nie mają limitu magazynu. Potrzebne są do budynków specjalnych, zbroi elitarnych jednostek i najwyższych poziomów siedziby.</p>',[['🧭 Szukaj na Mapie',()=>goTo(['explore']),'y'],['OK',closePanel]])}
