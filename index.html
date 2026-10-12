@@ -38,9 +38,9 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .star{width:44px;height:44px;flex:0 0 44px;background:radial-gradient(circle at 35% 30%,#7cc7ff,#2f7fd0);border:3px solid var(--ink);border-radius:13px;display:grid;place-items:center;font:400 21px "Lilita One";box-shadow:0 3px 0 rgba(0,0,0,.3)}
 .pname{font:400 15px "Lilita One";white-space:nowrap}
 .xpb{width:104px;height:9px;border-radius:5px;background:rgba(0,0,0,.5);border:2px solid var(--ink);overflow:hidden;margin-top:2px}
-.xpb i{display:block;height:100%;background:linear-gradient(#a6e3ff,#3d9be0);width:0;transition:width .4s}
+.xpb i{display:block;height:100%;background:linear-gradient(#a6e3ff,#3d9be0);width:100%;transform-origin:left;transform:scaleX(0);transition:transform .4s}
 .rbar{position:relative;width:128px;height:27px;border-radius:14px;background:rgba(20,12,4,.65);border:2px solid var(--ink);margin-right:12px}
-.rbar .f{position:absolute;left:2px;top:2px;bottom:2px;border-radius:11px;width:0;transition:width .35s}
+.rbar .f{position:absolute;left:2px;top:2px;bottom:2px;border-radius:11px;width:calc(100% - 4px);transform-origin:left;transform:scaleX(0);transition:transform .35s}
 .rbar .v{position:absolute;right:22px;top:2px;font:400 16px "Lilita One"}
 .rbar .m{position:absolute;left:8px;top:6px;font:400 10px "Lilita One";color:rgba(255,255,255,.8)}
 .rbar .i{position:absolute;right:-16px;top:-6px;font-size:28px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
@@ -1160,13 +1160,13 @@ document.querySelectorAll('.nb').forEach(b=>b.onclick=()=>nav(b.dataset.n));
    HUD & FX
 ===================================================================== */
 $('#bars').innerHTML=Object.entries(RES).map(([k,r])=>`<div class="rbar" id="r-${k}"><div class="f" style="background:${r.c}"></div><span class="m"></span><span class="v ol">0</span><span class="i">${r.e}</span></div>`).join('')+
-  `<div class="rbar" id="r-gems"><div class="f" style="background:linear-gradient(#b8ffb0,#3fc24a);width:calc(100% - 4px)"></div><span class="v ol">0</span><span class="i">💎</span></div>`;
+  `<div class="rbar" id="r-gems"><div class="f" style="background:linear-gradient(#b8ffb0,#3fc24a);transform:none"></div><span class="v ol">0</span><span class="i">💎</span></div>`;
 const shown={};
 function hud(){
   for(const k in RES){const el=$('#r-'+k),cp=capOf(k);shown[k]=shown[k]==null?S.res[k]:shown[k]+(S.res[k]-shown[k])*.25;if(Math.abs(shown[k]-S.res[k])<1)shown[k]=S.res[k];
-    el.querySelector('.v').textContent=fmt(shown[k]);el.querySelector('.f').style.width=`calc(${Math.min(1,S.res[k]/cp)*100}% - 4px)`;el.querySelector('.m').textContent='max '+fmt(cp)}
+    el.querySelector('.v').textContent=fmt(shown[k]);el.querySelector('.f').style.transform=`scaleX(${Math.min(1,S.res[k]/cp)})`;el.querySelector('.m').textContent='max '+fmt(cp)}
   $('#r-gems .v').textContent=fmt(S.gems);
-  $('#plv').textContent=S.lvl;$('#pxp').style.width=S.xp/xpNeed(S.lvl)*100+'%';$('#pname').textContent=hallName(hallL())+' · poz. '+hallL();
+  $('#plv').textContent=S.lvl;$('#pxp').style.transform=`scaleX(${Math.min(1,S.xp/xpNeed(S.lvl))})`;$('#pname').textContent=hallName(hallL())+' · poz. '+hallL();
   $('#bld').textContent=`👷 ${freeB()}/${builders()} wolnych`;
   // threat
   const th=$('#threat'),rs=raidsOn()?raidState():null,now=Date.now();let cls='threat',tt,ts;
