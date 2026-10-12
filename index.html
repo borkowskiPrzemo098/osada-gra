@@ -93,6 +93,9 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .arrow{font-size:38px;animation:arr .7s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(0,0,0,.4))}
 @keyframes arr{50%{translate:0 -12px}}
 .panel.tall{height:min(86dvh,760px)}
+.visitbar{position:fixed;left:0;right:0;top:0;z-index:12;display:none;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;background:linear-gradient(#3d2a6b,#2a1d4d);border-bottom:3px solid var(--ink)}
+.visitbar b{display:block;font:400 17px "Lilita One"}.visitbar small{color:#d9ccff;font-size:12px}.visitbar>div{flex:1;min-width:0}
+body.visit .visitbar{display:flex}body.visit .topbar,body.visit .nav,body.visit .qdone,body.visit .sel{display:none!important}
 /* bottom nav */
 .nav{position:fixed;left:0;right:0;bottom:0;z-index:12;display:flex;gap:4px;padding:6px 6px calc(env(safe-area-inset-bottom) + 6px);background:linear-gradient(#8f5f33,#6a4320);border-top:3px solid var(--ink);box-shadow:0 -4px 12px rgba(0,0,0,.2)}
 .nb{flex:1;position:relative;border:3px solid var(--ink);border-radius:14px;background:linear-gradient(#fff3d1,#e7cf96);box-shadow:0 3px 0 rgba(0,0,0,.35);padding:4px 0 3px;display:flex;flex-direction:column;align-items:center;cursor:pointer;font:400 11.5px "Lilita One";color:var(--ink);min-width:0}
@@ -237,6 +240,7 @@ textarea,input{user-select:text;-webkit-user-select:text}
 
 <div class="topbar" id="top"><div class="tlv" id="plvw"><span id="pti" class="pti">🧑‍🌾</span><b class="ol" id="plv">1</b><em id="pday">☀️</em><i><u id="pxp"></u></i></div><div id="bars" class="bars"></div></div>
 <div class="qdone" id="quest"></div>
+<div class="visitbar" id="visitBar"></div>
 
 <nav class="nav" id="nav">
   <button class="nb main" data-n="build"><span class="e">🔨</span>Budowanie<span class="dot" id="dBuild">!</span></button>
@@ -251,7 +255,7 @@ textarea,input{user-select:text;-webkit-user-select:text}
 <div class="plhint" id="plhint"></div>
 
 <div class="mapv" id="map"><canvas id="mc"></canvas>
-  <div class="mtop"><h2 class="ol">🗺️ Mapa krainy</h2><button class="xbtn" id="mX">✕</button></div>
+  <div class="mtop"><h2 class="ol">🗺️ Mapa krainy</h2><button class="btn s y" id="mPl" style="margin-right:6px">👥 Gracze</button><button class="xbtn" id="mX">✕</button></div>
   <div class="mcard" id="mCard"></div>
 </div>
 
@@ -391,6 +395,52 @@ const GO=[['col','farm'],['build','lumber'],['col','lumber'],['build','farm'],['
  [18,{ch:1,t:'Zbuduj Szpital polowy — leczy rannych po bitwach',p:()=>[cnt('hospital'),1],r:{food:300}},['build','hospital']],
  [29,{ch:3,t:'Bohater zostaje Burmistrzem (poz. 10)',p:()=>[Math.min(10,S.lvl),10],r:{gems:10}},['hero']],
  [36,{ch:4,t:'Koronuj bohatera na Króla (poz. 20)',p:()=>[Math.min(20,S.lvl),20],r:{gems:25}},['hero']]].forEach(([i,q,g])=>{QUESTS.splice(i,0,q);GO.splice(i,0,g)});
+/* Wyzwania — łańcuchy coraz trudniejszych celów */
+const ACH=[],PRODB={food:'farm',wood:'lumber',stone:'quarry',gold:'mine'};
+function fam(id,mk,tiers){tiers.forEach((v,k)=>{const o=mk(v,k);ACH.push(Object.assign({id:id+'_'+k,fam:id,k,goal:v,r:{gems:2+k*2}},o))})}
+const RW=(k,r,base)=>{const o={gems:2+k*2};if(r)o[r]=Math.round(base*Math.pow(2,k));return o};
+for(const r of ['food','wood','stone','gold'])fam('col_'+r,(v,k)=>({t:`Zbierz łącznie ${fmt(v)} ${RES[r].e} ${RES[r].n.toLowerCase()}`,p:()=>S.st['col_'+r]||0,go:['col',PRODB[r]],r:RW(k)}),r==='gold'?[400,2000,10000,40000,200000,800000]:r==='stone'?[600,3000,15000,60000,300000,1200000]:[1000,5000,25000,100000,500000,2000000]);
+for(const t of ['farm','lumber','quarry','mine','coop','pasture','sheepf','house','storage','vault','barracks','range','stable','smithy','hospital','tower','market'])
+  fam('lv_'+t,(v,k)=>({t:`Ulepsz ${DEF[t].n} do poz. ${v}`,p:()=>maxL(t),go:['up',t],r:RW(k,'wood',150)}),[3,5,7,10,12,14].filter(L=>L<=DEF[t].max));
+[['farm',[3,5,8]],['house',[3,5,8]],['hut',[3,4,5]],['wall',[10,20,30,40]],['tower',[2,3,4]],['coop',[2,4]],['pasture',[2,4]],['lumber',[2,4,5]],['quarry',[2,4]],['mine',[2,3]],['storage',[2,4]]].forEach(([t,tiers])=>
+  fam('n_'+t,(v,k)=>({t:`Postaw ${v}× ${DEF[t].n}`,p:()=>cnt(t),go:['build',t],r:RW(k,'food',150)}),tiers));
+fam('n_dec',(v,k)=>({t:`Udekoruj osadę: ${v} ozdób`,p:()=>S.b.filter(b=>DEF[b.t].cat==='dec'&&b.l>=1).length,go:['build','flowers'],r:RW(k,'gold',80)}),[5,10,20,30]);
+const TRT={f:[10,30,80],s:[10,30,80],k:[10,25,60],a:[10,30,80],x:[10,25,60],c:[5,15,40],h:[5,15,30]};
+for(const u in TRT)fam('tr_'+u,(v,k)=>({t:`Wyszkol łącznie ${v}× ${UNITS[u].n}`,p:()=>S.st['tr_'+u]||0,go:['train',u],r:RW(k,'food',200)}),TRT[u]);
+fam('raid',(v,k)=>({t:`Odeprzyj ${v} najazdów`,p:()=>S.st.raidWin||0,go:['raid'],r:RW(k,'gold',100)}),[3,10,25,50,100,200]);
+fam('loot',(v,k)=>({t:`Złup ${v} osad`,p:()=>S.st.loots||0,go:['map',1],r:RW(k,'gold',100)}),[3,10,25,50,100,200]);
+fam('lootlv',(v,k)=>({t:`Złup osadę poziomu ${v}`,p:()=>S.st.maxLoot||0,go:['map',v],r:RW(k,'stone',150)}),[2,4,5,7,8,9,10]);
+fam('herolv',(v,k)=>({t:`Bohater osiąga poziom ${v} (${titleOf(v)[1]})`,p:()=>S.lvl,go:['hero'],r:RW(k,'food',200)}),[3,5,8,12,15,18,20,25,30]);
+fam('skill',(v,k)=>({t:`Przydziel ${v} punktów umiejętności`,p:()=>skTotal(),go:['hero']}),[5,10,20,30,40]);
+fam('heal',(v,k)=>({t:`Wylecz ${v} rannych`,p:()=>S.st.healed||0,go:['hosp'],r:RW(k,'food',150)}),[5,25,100,300]);
+fam('clear',(v,k)=>({t:`Wytnij ${v} przeszkód`,p:()=>S.st.clear||0,go:['obs'],r:RW(k,'wood',150)}),[10,25,50,80]);
+fam('land',(v,k)=>({t:`Powiększ teren do ${10+2*v}×${10+2*v}`,p:()=>S.land,go:['land']}),[2,4,6,8,10]);
+fam('story',(v,k)=>({t:`Ukończ ${v} zadań fabuły`,p:()=>S.q,go:null}),[10,20,30,42]);
+fam('daily',(v,k)=>({t:`Wykonaj ${v} zadań dnia`,p:()=>S.st.dailyDone||0,go:null}),[3,10,30,100,250]);
+fam('ups',(v,k)=>({t:`Ukończ ${v} budów i ulepszeń`,p:()=>S.st.ups||0,go:null,r:RW(k,'wood',150)}),[10,30,80,200,500]);
+fam('streak',(v,k)=>({t:`Odbierz codzienną skrzynię ${v} dni z rzędu`,p:()=>S.daily&&S.daily.streak||0,go:null}),[3,7]);
+const achVisible=()=>{const out=[],seen={};for(const a of ACH){if(S.ach[a.id])continue;if(seen[a.fam])continue;seen[a.fam]=1;out.push(a)}return out};
+const achDone=a=>Math.min(a.p(),a.goal)>=a.goal;
+const achReady=()=>achVisible().filter(achDone).length;
+function claimAch(id){const a=ACH.find(x=>x.id===id);if(!a||S.ach[id]||!achDone(a))return;S.ach[id]=1;for(const[r,v]of Object.entries(a.r))gain(r,v);addXP(5+a.k*3);sfx('chest');dirty=true;toast(`🏅 ${a.t} — nagroda odebrana!`)}
+/* Zadania dnia */
+const DTASK=[
+  {k:'col_food',t:n=>`Zbierz ${fmt(n)} 🌾 żywności`,n:()=>250*hallL(),go:['col','farm']},
+  {k:'col_wood',t:n=>`Zbierz ${fmt(n)} 🪵 drewna`,n:()=>220*hallL(),go:['col','lumber']},
+  {k:'col_stone',t:n=>`Zbierz ${fmt(n)} 🪨 kamienia`,n:()=>150*hallL(),go:['col','quarry'],ok:()=>cnt('quarry')},
+  {k:'col_gold',t:n=>`Zbierz ${fmt(n)} 🪙 złota`,n:()=>90*hallL(),go:['col','mine'],ok:()=>cnt('mine')||cnt('house')},
+  {k:'trained',t:n=>`Wyszkol ${n} jednostek`,n:()=>4+hallL()*2,go:['train','f'],ok:()=>cnt('barracks')},
+  {k:'raidWin',t:()=>'Odeprzyj najazd',n:()=>1,go:['raid'],ok:()=>raidsOn()},
+  {k:'loots',t:()=>'Złup osadę na mapie',n:()=>1,go:['map',1],ok:()=>cnt('barracks')},
+  {k:'ups',t:n=>`Ukończ ${n} budowy lub ulepszenia`,n:()=>2+(hallL()>>1),go:null},
+  {k:'clear',t:n=>`Wytnij ${n} przeszkody`,n:()=>2,go:['obs'],ok:()=>S.obs.some(o=>unl(o.i,o.j))},
+  {k:'healed',t:n=>`Wylecz ${n} rannych`,n:()=>3,go:['hosp'],ok:()=>cnt('hospital')}];
+const dstat=k=>k==='trained'?Object.keys(UNITS).reduce((a,u)=>a+(S.st['tr_'+u]||0),0):(S.st[k]||0);
+function dailyTasks(){const today=new Date().toDateString();if(!S.dt||S.dt.d!==today){const pool=DTASK.filter(x=>!x.ok||x.ok()).sort(()=>Math.random()-.5).slice(0,3);
+    S.dt={d:today,tasks:pool.map(x=>({k:x.k,goal:x.n(),base:dstat(x.k),c:0}))};dirty=true}return S.dt.tasks}
+const dProg=t=>Math.min(t.goal,dstat(t.k)-t.base);
+const dailyReady=()=>S.dt?S.dt.tasks.filter(t=>!t.c&&dProg(t)>=t.goal).length:0;
+function claimDaily(i){const t=S.dt.tasks[i];if(!t||t.c||dProg(t)<t.goal)return;t.c=1;const h=hallL();gain('gems',3);gain('food',150*h);gain('wood',150*h);if(h>=3)gain('gold',60*h);S.st.dailyDone=(S.st.dailyDone||0)+1;addXP(10+h*2);sfx('chest');dirty=true;toast('📅 Zadanie dnia wykonane!')}
 const qmap=o=>o<=8?o:o<=16?o+1:o<=26?o+2:o<=32?o+3:o+4;
 
 /* =====================================================================
@@ -404,7 +454,7 @@ function addObstacles(s,pin,pout,ringOnly){const r=rng(1337+s.nid*7),occ=new Set
     const inner=i>=10&&i<20&&j>=10&&j<20,core=i>=12&&i<18&&j>=12&&j<18;if(core)continue;
     if(r()<(inner?pin:pout)){const q=r();s.obs.push({id:s.nid++,t:q<.42?'pine':q<.7?'oak':q<.88?'rock':'bush',i,j})}}}
 function fresh(){const now=Date.now();
-  const s={v:3,res:{food:60,wood:40,stone:0,gold:0},gems:10,xp:0,lvl:1,land:0,b:[],obs:[],army:{},train:{barracks:[],range:[],stable:[]},q:0,st:{},nid:1,last:now,snd:1,raid:null,raidK:0,raidH:1,raidP:null,daily:null,world:null,marches:[],started:0,born:now,qv:2,sk:{},sp:0,hero:{name:'Bohater'},wounded:{},heal:[]};
+  const s={v:3,res:{food:60,wood:40,stone:0,gold:0},gems:10,xp:0,lvl:1,land:0,b:[],obs:[],army:{},train:{barracks:[],range:[],stable:[]},q:0,st:{},nid:1,last:now,snd:1,raid:null,raidK:0,raidH:1,raidP:null,daily:null,world:null,marches:[],started:0,born:now,qv:2,sk:{},sp:0,hero:{name:'Bohater'},wounded:{},heal:[],ach:{},dt:null,net:null};
   for(const u in UNITS)s.army[u]=0;
   [['hall',13,13,now],['farm',10,14,now-5*60000],['hut',17,11,now]].forEach(([t,i,j,t0])=>s.b.push({id:s.nid++,t,i,j,l:1,t0}));
   addObstacles(s,.09,.13);return s}
@@ -420,7 +470,7 @@ function migrate(o){const s=fresh();s.b=[];s.obs=[];const off=3;
   addObstacles(s,0,.13,true);s.migrated=1;return s}
 function normalize(s){s.army=s.army||{};for(const u in UNITS)s.army[u]=s.army[u]||0;
   s.train=s.train&&!Array.isArray(s.train)?s.train:{};TRAINB.forEach(b=>s.train[b]=s.train[b]||[]);
-  s.marches=s.marches||[];s.st=s.st||{};s.land=s.land||0;s.sk=s.sk||{};if(s.sp==null)s.sp=Math.max(0,(s.lvl||1)-1);s.hero=s.hero||{name:'Bohater'};s.wounded=s.wounded||{};for(const u in UNITS)s.wounded[u]=s.wounded[u]||0;s.heal=s.heal||[];
+  s.marches=s.marches||[];s.st=s.st||{};s.land=s.land||0;s.sk=s.sk||{};if(s.sp==null)s.sp=Math.max(0,(s.lvl||1)-1);s.hero=s.hero||{name:'Bohater'};s.wounded=s.wounded||{};for(const u in UNITS)s.wounded[u]=s.wounded[u]||0;s.heal=s.heal||[];s.ach=s.ach||{};
   if(!s.qv){s.q=qmap(s.q||0);s.qv=2}s.res=Object.assign({food:0,wood:0,stone:0,gold:0},s.res);return s}
 const readLS=k=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&v.b?v:null}catch(e){return null}};
 let S=readLS(KEY);{const bk=readLS(KEY+'.bak');if(bk&&(!S||(bk.last||0)>(S.last||0)))S=bk}
@@ -435,7 +485,7 @@ IDB.open().then(async()=>{const j=await IDB.get(),j2=j?null:await IDB.get('osada
     else if(j2&&!S.started){const v=JSON.parse(j2);if(v&&v.b){const m=migrate(v);window.__restoring=1;localStorage.setItem(KEY,JSON.stringify(m));location.reload()}}}catch(e){}});
 try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 let dirty=true,lastSave=0;
-function save(){if(!S||window.__restoring)return;S.last=Date.now();if(!S.started&&(S.q>0||S.st.col_food))S.started=1;const j=JSON.stringify(S);
+function save(){if(!S||window.__restoring||window.__visit)return;S.last=Date.now();if(!S.started&&(S.q>0||S.st.col_food))S.started=1;const j=JSON.stringify(S);
   try{localStorage.setItem(KEY,j);localStorage.setItem(KEY+'.bak',j)}catch(e){}if(S.started)IDB.put(j);lastSave=Date.now()}
 
 /* =====================================================================
@@ -726,7 +776,18 @@ const OMK={
   rock(g){dd(g,.32,'#8f969c',0,.2,0);dd(g,.18,'#a2a8ae',.25,.1,.15);dd(g,.13,'#7d848a',-.22,.08,.18)},
   bush(g){sp(g,.24,'#4c8f3c',-.1,.18,0);sp(g,.2,'#5aa046',.15,.15,.08);sp(g,.06,'#e8384f',.05,.33,.1)},
 };
-function makeMesh(t,l,obs){const g=new THREE.Group();(obs?OMK:MK)[t](g,Math.max(1,l),PAL[era()]);return obs?g:optimize(g)}
+function makeMesh(t,l,obs){const g=new THREE.Group();(obs?OMK:MK)[t](g,Math.max(1,l),PAL[era()]);if(!obs)lvlDecor(g,t,Math.max(1,l));return obs?g:optimize(g)}
+/* każdy poziom rozbudowuje wygląd: podmurówka → sztandar → latarnie → skrzynie → złote zdobienia */
+function lvlDecor(g,t,l){const d=DEF[t];if(!d||d.cat==='dec'||['hall','wall','hut'].includes(t)||l<2)return;const s=d.s,r=s/2-.05,p=PAL[era()];
+  const c=l>=8?p.gold:l>=5?p.base:'#9b7a52',o=l>=8?{m:.6,r:.35}:undefined;
+  [[0,-r,s-.06,.07],[0,r,s-.06,.07],[-r,0,.07,s-.06],[r,0,.07,s-.06]].forEach(([x,z,w,dp])=>bx(g,w,l>=5?.09:.05,dp,c,x,0,z,o));
+  if(l>=3){cy(g,.016,.016,.62,'#5a4030',r-.06,0,-r+.06,4);flag(g,r-.06,.55,-r+.06,l>=10?'#7b2fbf':l>=6?'#3f70b9':'#d8392b').scale.set(.6,.7,1)}
+  if(l>=4)[[-r+.06,r-.06],[r-.06,r-.06]].forEach(([x,z])=>{cy(g,.018,.022,.36,'#3a3a3a',x,0,z,5);sp(g,.045,'#ffb340',x,.4,z,{e:'#ff9a20',ei:1.1})});
+  if(l>=6){bx(g,.15,.15,.15,'#a8733f',-r+.14,0,r-.14);bx(g,.11,.11,.11,'#c58b4f',-r+.14,.15,r-.14);cy(g,.07,.07,.16,'#7a5230',-r+.32,0,r-.1,8)}
+  if(l>=8){cy(g,.045,.055,.32,p.base,-r+.06,0,-r+.06,6);sp(g,.075,'#f2c230',-r+.06,.4,-r+.06,{m:.7,r:.3})}
+  if(l>=10){cy(g,.016,.016,.62,'#5a4030',-r+.06,0,r-.06,4);flag(g,-r+.06,.55,r-.06,'#f2c230').scale.set(.6,.7,1)}
+  if(l>=12)add(g,geo('gem',()=>new THREE.OctahedronGeometry(.09,0)),M('#7fe0ff',{e:'#3fc0ff',ei:1.2,m:.4,r:.2}),r-.06,.75,r-.06)}
+function starFx(pos,s){for(let i=0;i<30;i++){const a=Math.random()*Math.PI*2,rr=(s||2)*.5*(.5+Math.random()*.6);particle(pos.clone().add(new V3(Math.cos(a)*rr,.3+Math.random()*1.2,Math.sin(a)*rr)),i%3?'#ffe27a':'#ffffff',{oct:1,em:1,v:new V3(Math.cos(a)*.3,.9+Math.random()*1.2,Math.sin(a)*.3),g:-.6,life:1.4+Math.random()*.8,spin:1,op:1})}}
 function optimize(g){const u=g.userData,dyn=new Set([...(u.flags||[]),...(u.fill||[]),...(u.spin||[]).map(x=>x[0])]);
   const hasDyn=o=>{let f=false;o.traverse(c=>{if(dyn.has(c))f=true});return f};
   const st=new THREE.Group();[...g.children].forEach(c=>{if(!hasDyn(c))st.add(c)});
@@ -806,7 +867,7 @@ function sync(){
       const A=ANIM[b.t];if(A&&b.l>=1){const n=A.n(b.l);for(let k=0;k<n;k++){const m=A.mk();let x,z;do{x=(Math.random()*2-1)*A.r;z=(Math.random()*2-1)*A.r}while(!A.ok(x,z));m.position.set(x,.04,z);m.rotation.y=Math.random()*6;r.root.add(m);r.anim.push({m,tx:x,tz:z,w:Math.random()*3})}}
       if(b.t==='hospital'&&b.l>=1){const nw=Math.min(3,nUnits(S.wounded)+S.heal.length);for(let k=0;k<nw;k++){const f=person(['#8a6a3a','#9aa4ad','#3f8a3a'][k]);f.rotation.x=-Math.PI/2;f.position.set(-.55+k*.55,.2,.72);f.scale.setScalar(1.05);r.root.add(f)}}
       if(wasBuilt)r.pop=performance.now()}
-    r.root.position.copy(bPos(b));r.root.visible=!(PL&&PL.id===b.id)}
+    r.root.position.copy(bPos(b));r.root.visible=!(PL&&PL.id===b.id);const dc=DEF[b.t].cat;r.root.scale.setScalar(dc==='dec'||b.t==='wall'||b.t==='hut'?1:1+Math.min(.06,.006*(Math.max(1,b.l)-1)))}
   for(const k in recs)if(!ids.has(+k)){scene.remove(recs[k].root);picks.splice(picks.indexOf(recs[k].root),1);delete recs[k];removeLab('b'+k)}
   const okey=S.obs.map(o=>o.id).join(',');
   if(okey!==obsKey){obsKey=okey;scene.remove(obsG);obsG=new THREE.Group();const tmp=S.obs.map(o=>{const m=makeMesh(o.t,1,true);m.position.copy(oPos(o));m.rotation.y=(o.id*1.7)%6;return m});mergeStatic(tmp,obsG);scene.add(obsG);
@@ -844,7 +905,7 @@ function bfs(si,sj,ti,tj){if(OCC[ti][tj]||!unl(ti,tj))return null;const N=G*G,pr
 
 /* ---------- particles ---------- */
 const parts=[];
-function particle(pos,color,o){const m=new THREE.Mesh(geo(o.box?'pbx':'psp',()=>o.box?new THREE.BoxGeometry(.08,.08,.08):new THREE.IcosahedronGeometry(.1,0)),new THREE.MeshStandardMaterial({color:new THREE.Color(color).convertSRGBToLinear(),flatShading:true,transparent:true,opacity:o.op||.85,emissive:o.em?new THREE.Color(color):undefined,emissiveIntensity:o.em?.6:0}));
+function particle(pos,color,o){const m=new THREE.Mesh(o.oct?geo('poct',()=>new THREE.OctahedronGeometry(.07,0)):geo(o.box?'pbx':'psp',()=>o.box?new THREE.BoxGeometry(.08,.08,.08):new THREE.IcosahedronGeometry(.1,0)),new THREE.MeshStandardMaterial({color:new THREE.Color(color).convertSRGBToLinear(),flatShading:true,transparent:true,opacity:o.op||.85,emissive:o.em?new THREE.Color(color):undefined,emissiveIntensity:o.em?.6:0}));
   m.position.copy(pos);scene.add(m);parts.push({m,v:o.v||new V3(),life:o.life||2,t:0,grow:o.grow||0,g:o.g||0,spin:o.spin,op:o.op})}
 function burst(pos,n=34){for(let i=0;i<n;i++)particle(pos.clone().add(new V3(0,.8,0)),['#ffd23a','#ffffff','#ff6b4a','#7fdc55','#6fc3ff'][i%5],{box:1,em:1,v:new V3((Math.random()-.5)*4,2.5+Math.random()*3.5,(Math.random()-.5)*4),g:-9,life:1.3,spin:1});
   for(let i=0;i<10;i++)particle(pos.clone().add(new V3((Math.random()-.5)*1.5,.1,(Math.random()-.5)*1.5)),'#e8dcc4',{v:new V3(0,.6,0),grow:1.6,life:1.1,op:.7})}
@@ -878,7 +939,7 @@ canvas.addEventListener('wheel',e=>{e.preventDefault();cam.d=clamp(cam.d*(e.delt
 /* =====================================================================
    INTERACTION
 ===================================================================== */
-function tap(x,y){
+function tap(x,y){if(window.__visit){const r=pick(x,y);if(r&&r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b)toast(`${b.t==='hall'?hallName(b.l):DEF[b.t].n} · poz. ${b.l}`)}return}
   if(PL){const p=groundAt(x,y);if(p)moveGhost(p.x,p.z);return}
   let r=pick(x,y);if(!r){const p=groundAt(x,y);if(p){const i=Math.floor(p.x+H),j=Math.floor(p.z+H),o=S.obs.find(o=>o.i===i&&o.j===j);if(o)r={k:'o',id:o.id}}}
   if(!r){deselect();return}
@@ -942,8 +1003,8 @@ function buyLand(){const n=S.land+1;if(n>10)return;if(n>LANDMAX[hallL()-1]){toas
 /* ---------- jobs & training ---------- */
 function checkJobs(silent){const now=Date.now();let any=0;
   for(const b of S.b)if(b.job&&now>=b.job.end){const k=b.job.kind,dur=(b.job.end-b.job.start)/1000;delete b.job;any++;
-    if(k==='build'){b.l=1;b.t0=now}else b.l++;addXP(4+Math.round(Math.sqrt(dur)*1.5));
-    if(!silent){sync();burst(bPos(b));sfx('build');
+    if(k==='build'){b.l=1;b.t0=now}else b.l++;addXP(4+Math.round(Math.sqrt(dur)*1.5));S.st.ups=(S.st.ups||0)+1;
+    if(!silent){sync();burst(bPos(b));starFx(bPos(b),DEF[b.t].s);setTimeout(()=>starFx(bPos(b),DEF[b.t].s),500);sfx('build');setTimeout(()=>sfx('chest'),350);const sc=toScreen(bPos(b).setY(LH[b.t]||1.6));popTxt(k==='build'?'✨ Zbudowano!':`⭐ Poziom ${b.l}!`,sc.x,sc.y);
       if(b.t==='hall'){const e=era();banner(`${hallName(b.l)} poz. ${b.l}!`,b.l===3||b.l===6?ERAS[e]+'!':'Nowe budynki i teren');S.gems+=3}
       else toast(`${DEF[b.t].n} ${k==='build'?'zbudowano':'— poziom '+b.l}! ✨`)}}
   for(const o of [...S.obs])if(o.job&&now>=o.job.end){const d=OBS[o.t],am=Math.round((30+Math.random()*50)*(1+hallL()*.5));S.obs=S.obs.filter(q=>q!==o);any++;
@@ -1071,7 +1132,7 @@ function drawMapBg(){const c=document.createElement('canvas'),K=.6;c.width=c.hei
 function openMap(){closePanel();deselect();endPlace();if(!S.world)S.world=genWorld();MAP.open=true;MAP.news=0;$('#map').classList.add('on');resizeMap();if(!MAP.bg)MAP.bg=drawMapBg();
   MAP.v={x:HOME.x,y:HOME.y,z:Math.min(innerWidth,innerHeight)/780};MAP.sel=null;drawMapCard();sfx('tap');requestAnimationFrame(mapLoop)}
 function closeMap(){MAP.open=false;$('#map').classList.remove('on')}
-$('#mX').onclick=closeMap;
+$('#mX').onclick=closeMap;$('#mPl').onclick=()=>{closeMap();openPlayers()};
 function w2s(x,y){return[(x-MAP.v.x)*MAP.v.z+innerWidth/2,(y-MAP.v.y)*MAP.v.z+innerHeight/2]}
 function s2w(x,y){return[(x-innerWidth/2)/MAP.v.z+MAP.v.x,(y-innerHeight/2)/MAP.v.z+MAP.v.y]}
 function mapLoop(){if(!MAP.open)return;drawMap();requestAnimationFrame(mapLoop)}
@@ -1256,6 +1317,37 @@ function renderCreator(){const c=CR;let h=`<img class="crimg" id="crImg" src="${
   $('#crGo').onclick=()=>{const nm=(c.name||'').trim();if(!nm){toast('Nadaj bohaterowi imię');$('#crName').focus();return}
     S.hero={...S.hero,name:nm.slice(0,16),look:c.look,made:1};if(c.first&&c.sk)S.sk[c.sk]=(S.sk[c.sk]||0)+1;people.hKey=null;sync();dirty=true;closePanel();
     sfx('win');heroFx(30);banner(`${titleOf(S.lvl)[2]} ${S.hero.name}`,c.first?'Twoja przygoda się zaczyna!':'Nowy wygląd');if(c.first)setTimeout(()=>toast('📜 Zajrzyj do Celów — pierwsze zadanie czeka'),2200)}}
+/* Gracze — podgląd wiosek innych (Supabase) */
+const NET={url:'https://pmnrgfgeoccuyvksidgu.supabase.co',key:'sb_publishable_hiWSsAijxE-cjrphmJbHYQ_r-j8T8iL',ok:null,last:0,list:null};
+async function rpc(fn,args,keep){const r=await fetch(NET.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:NET.key,'Content-Type':'application/json'},body:JSON.stringify(args||{}),keepalive:!!keep});if(!r.ok)throw new Error('rpc '+r.status);return r.json()}
+function netId(){if(!S.net){const a=new Uint8Array(24);crypto.getRandomValues(a);S.net={id:(crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g,()=>(Math.random()*16|0).toString(16))),token:[...a].map(b=>b.toString(16).padStart(2,'0')).join(''),share:1};dirty=true}return S.net}
+const snapshot=()=>({b:S.b.filter(b=>b.l>=1).map(b=>[b.t,b.i,b.j,b.l]),land:S.land,army:S.army,hero:{look:S.hero.look},st:{raidWin:S.st.raidWin||0,loots:S.st.loots||0,healed:S.st.healed||0}});
+async function netPush(keep){if(window.__visit||!S.hero.made||!S.started)return;const n=netId();if(!n.share)return;
+  try{await rpc('osada_save',{p_id:n.id,p_token:n.token,p_name:S.hero.name,p_title:titleOf(S.lvl)[1],p_lvl:S.lvl,p_hall:hallL(),p_power:Math.round(unitPow()+homeDef().inf+homeDef().rng),p_raids:S.st.raidWin||0,p_loots:S.st.loots||0,p_snap:snapshot()},keep);NET.ok=true;NET.last=Date.now()}catch(e){NET.ok=false}}
+const agoTxt=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?'teraz online':m<60?m+' min temu':m<1440?Math.round(m/60)+' godz. temu':Math.round(m/1440)+' dni temu'};
+function shareLink(){return location.origin+location.pathname+'?wies='+netId().id}
+async function openPlayers(){openPanel('Gracze','players',()=>{$('#pB').innerHTML='<p class="note" style="text-align:center">Wczytuję listę osad…</p>'});
+  await netPush();let rows=null;try{rows=await rpc('osada_list')}catch(e){}
+  if(!PANEL||PANEL.kind!=='players')return;const me=netId().id;
+  let h=`<div class="li"><div class="ic">🔗</div><div class="tx"><b>Twoja wioska jest ${S.net.share?'widoczna':'ukryta'}</b>Wyślij link znajomym — zobaczą Twoją osadę.</div><div class="btns"><button class="btn s y" id="pShare">Link</button><button class="btn s" id="pTog">${S.net.share?'Ukryj':'Pokaż'}</button></div></div>`;
+  if(!rows)h+=`<div class="li"><div class="ic">🛠️</div><div class="tx"><b>Lista graczy jeszcze nie działa</b>Baza danych gry nie jest jeszcze skonfigurowana (jednorazowa konfiguracja Supabase). Twoja gra działa normalnie.</div></div>`;
+  else{h+=`<h4>Osady w krainie · ${rows.length}</h4>`+rows.map(r=>{const t=TITLES.find(x=>x[1]===r.title)||TITLES[0],mine=r.id===me;return `<div class="li ${mine?'cur':''}"><div class="ic">${t[2]}<small>${r.lvl}</small></div><div class="tx"><b>${t[1]} ${String(r.name).replace(/[<>&]/g,'')}${mine?' (Ty)':''}</b>${hallName(r.hall)} poz. ${r.hall} · 🏆${r.raids} · 💰${r.loots}<br>${agoTxt(r.updated_at)}</div>${mine?'':`<button class="btn s" data-visit="${r.id}">Odwiedź</button>`}</div>`}).join('')}
+  $('#pB').innerHTML=h;
+  $('#pShare').onclick=async()=>{const l=shareLink();try{if(navigator.share)await navigator.share({title:'Moja osada',text:`Zobacz moją osadę — ${titleOf(S.lvl)[1]} ${S.hero.name}`,url:l});else{await navigator.clipboard.writeText(l);toast('🔗 Link skopiowany')}}catch(e){try{await navigator.clipboard.writeText(l);toast('🔗 Link skopiowany')}catch(_){prompt('Skopiuj link:',l)}}};
+  $('#pTog').onclick=()=>{S.net.share=S.net.share?0:1;dirty=true;openPlayers()};
+  $('#pB').querySelectorAll('[data-visit]').forEach(b=>b.onclick=()=>visitVillage(b.dataset.visit))}
+let HOMES=null;
+async function visitVillage(id){toast('🚶 Wyruszasz z wizytą…');let row=null;try{row=(await rpc('osada_get',{p_id:id}))[0]}catch(e){}
+  if(!row){toast('Nie udało się wczytać tej osady');return}enterVisit(row)}
+function enterVisit(row){if(HOMES)leaveVisit();closePanel();if(MAP.open)closeMap();deselect();if(PL)endPlace();save();HOMES=S;window.__visit=row;
+  const sn=row.snapshot||{},v=fresh();v.b=(sn.b||[]).filter(x=>DEF[x[0]]).map(([t,i,j,l],k)=>({id:900000+k,t,i,j,l,t0:Date.now()}));
+  if(!v.b.some(b=>b.t==='hall'))v.b.push({id:900999,t:'hall',i:13,j:13,l:row.hall||1,t0:Date.now()});
+  v.obs=[];v.land=sn.land||0;Object.assign(v.army,sn.army||{});v.hero={name:row.name,look:sn.hero&&sn.hero.look,made:1};v.lvl=row.lvl||1;v.st=sn.st||{};v.world=HOMES.world;v.q=0;S=normalize(v);
+  resetPeople();sync();cam.t.set(0,0,0);cam.d=24;document.body.classList.add('visit');
+  const t=TITLES.find(x=>x[1]===row.title)||TITLES[0];$('#visitBar').innerHTML=`<div><b class="ol">${t[2]} ${t[1]} ${String(row.name).replace(/[<>&]/g,'')}</b><small>${hallName(row.hall)} poz. ${row.hall} · 🏆 ${(sn.st||{}).raidWin||0} najazdów · 💰 ${(sn.st||{}).loots||0} łupów</small></div><button class="btn y s" id="vBack">🏠 Wróć do siebie</button>`;
+  $('#vBack').onclick=leaveVisit;banner(`Wioska: ${row.name}`,'Tryb podglądu');sfx('tap')}
+function leaveVisit(){if(!HOMES)return;S=HOMES;HOMES=null;window.__visit=null;resetPeople();sync();document.body.classList.remove('visit');cam.t.set(-.4,0,-.4);cam.d=22;sfx('tap')}
+function resetPeople(){people.villagers.forEach(p=>scene.remove(p.f));people.villagers=[];people.sKey=null;people.hKey=null}
 /* Bohater */
 function openHero(){openPanel('Bohater wioski','hero',renderHero)}
 function renderHero(){const t=titleOf(S.lvl),nt=nextTitle(S.lvl),now=Date.now();
@@ -1276,12 +1368,26 @@ function renderHero(){const t=titleOf(S.lvl),nt=nextTitle(S.lvl),now=Date.now();
     const rs=pb.querySelector('#hReset');if(rs)rs.onclick=()=>{if(S.gems<20){toast('Potrzeba 20 💎');return}S.gems-=20;S.sp+=skTotal();S.sk={};dirty=true;renderHero()}})}
 /* Cele */
 function openGoals(){openPanel('Cele i zadania','goals',renderGoals)}
-function renderGoals(){let h=`<div class="stat"><span>Ukończone zadania</span><b>${S.q} / ${QUESTS.length}</b></div>`,lastCh=-1;
+let goalTab='story';
+function renderGoals(){const ar=achReady(),dr=dailyReady();dailyTasks();
+  tabs([['story','📜 Fabuła'+(S.q<QUESTS.length&&qDone(QUESTS[S.q])?' ●':'')],['ach','🏅 Wyzwania'+(ar?' ('+ar+')':'')],['day','📅 Dzienne'+(dr?' ('+dr+')':'')]],goalTab,t=>{goalTab=t;$('#pB').dataset.h='';renderGoals()});
+  if(goalTab==='ach')return renderAch();if(goalTab==='day')return renderDaily();renderStory()}
+function renderAch(){const list=achVisible().sort((a,b)=>(achDone(b)-achDone(a))||(Math.min(1,b.p()/b.goal)-Math.min(1,a.p()/a.goal)));const done=Object.keys(S.ach).length;
+  let h=`<div class="stat"><span>Zdobyte wyzwania</span><b>${done} / ${ACH.length}</b></div><p class="note">Każde wyzwanie ma kolejne, trudniejsze progi — po odebraniu nagrody pojawia się następny.</p>`;
+  h+=list.map(a=>{const v=Math.min(a.p(),a.goal),ok=v>=a.goal,tiers=ACH.filter(x=>x.fam===a.fam).length;return `<div class="li ${ok?'cur':''}"><div class="ic">🏅<small>${a.k+1}/${tiers}</small></div><div class="tx"><b>${a.t}</b>Nagroda: ${costTxt(a.r)}<div class="qbar"><i style="width:${v/a.goal*100}%"></i></div>${fmt(v)}/${fmt(a.goal)}</div>${ok?`<button class="btn y s" data-ach="${a.id}">Odbierz</button>`:a.go?`<button class="btn s" data-achgo="${a.id}">Pokaż</button>`:''}</div>`}).join('');
+  setPB(h,pb=>{pb.querySelectorAll('[data-ach]').forEach(b=>b.onclick=()=>{claimAch(b.dataset.ach);$('#pB').dataset.h='';renderGoals()});pb.querySelectorAll('[data-achgo]').forEach(b=>b.onclick=()=>goTo(ACH.find(x=>x.id===b.dataset.achgo).go))})}
+function renderDaily(){const ts=dailyTasks(),now=new Date(),mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1).getTime();
+  let h=`<div class="stat"><span>Nowe zadania za</span><b data-end="${mid}"></b></div>`;
+  h+=ts.map((t,i)=>{const D=DTASK.find(x=>x.k===t.k),v=dProg(t),ok=v>=t.goal;return `<div class="li ${ok&&!t.c?'cur':''} ${t.c?'lock':''}"><div class="ic">${t.c?'✅':'📅'}</div><div class="tx"><b>${D.t(t.goal)}</b>Nagroda: 💎3 · 🌾${fmt(150*hallL())} · 🪵${fmt(150*hallL())}${hallL()>=3?' · 🪙'+fmt(60*hallL()):''}<div class="qbar"><i style="width:${v/t.goal*100}%"></i></div>${fmt(v)}/${fmt(t.goal)}</div>${t.c?'':ok?`<button class="btn y s" data-dc="${i}">Odbierz</button>`:D.go?`<button class="btn s" data-dg="${i}">Pokaż</button>`:''}</div>`}).join('');
+  h+='<p class="note">Codziennie o północy losują się 3 nowe zadania dopasowane do rozwoju Twojej osady.</p>';
+  setPB(h,pb=>{pb.querySelectorAll('[data-dc]').forEach(b=>b.onclick=()=>{claimDaily(+b.dataset.dc);$('#pB').dataset.h='';renderGoals()});pb.querySelectorAll('[data-dg]').forEach(b=>b.onclick=()=>goTo(DTASK.find(x=>x.k===ts[+b.dataset.dg].k).go))})}
+function renderStory(){let h=`<div class="stat"><span>Ukończone zadania fabuły</span><b>${S.q} / ${QUESTS.length}</b></div>`,lastCh=-1;
+  if(S.q>=QUESTS.length)h+='<p class="note">🎉 Fabuła ukończona! Zostały Wyzwania i Zadania dnia.</p>';
   QUESTS.forEach((q,i)=>{if(i>S.q+3)return;if(q.ch!==lastCh){lastCh=q.ch;h+=`<div class="chap"><span>${CHAPTERS[q.ch]}</span></div>`}
     const[a,b]=i<S.q?[1,1]:q.p(),done=i<S.q,cur=i===S.q,ok=cur&&a>=b;
     h+=`<div class="li ${cur?'cur':''} ${i>S.q?'lock':''}"><div class="ic">${done?'✅':cur?'📜':'🔒'}</div><div class="tx"><b>${i>S.q?'Następne zadanie':q.t}</b>${done?'Ukończone':`Nagroda: ${costTxt(q.r)}`}${cur?`<div class="qbar"><i style="width:${Math.min(1,a/b)*100}%"></i></div>${Math.min(a,b)}/${b}`:''}</div>${ok?'<button class="btn y s" id="gClaim">Odbierz</button>':cur&&GO[i]?`<button class="btn s" id="gGo">Pokaż</button>`:''}</div>`});
   h+=`<p class="note">Zadania prowadzą przez grę — każde daje nagrodę. Rozdziały odblokowują się wraz z rozwojem osady.</p>`;
-  setPB(h,pb=>{const c=pb.querySelector('#gClaim');if(c)c.onclick=()=>{claimQuest();renderGoals()};const g=pb.querySelector('#gGo');if(g)g.onclick=()=>goTo(GO[S.q])})}
+  setPB(h,pb=>{const c=pb.querySelector('#gClaim');if(c)c.onclick=()=>{claimQuest();$('#pB').dataset.h='';renderGoals()};const g=pb.querySelector('#gGo');if(g)g.onclick=()=>goTo(GO[S.q])})}
 
 /* ---------- „Pokaż” — prowadzi prosto do elementu ---------- */
 let HL={act:null,arrow:null},camFly=null;
@@ -1302,6 +1408,7 @@ function goTo(g){if(!g)return;const[k,a]=g;audioInit();
     deselect();if(MAP.open)closeMap();armyTab='army';openArmy('army');return hlSel('[data-u="'+a+'"][data-n="1"]',true)}
   if(k==='bs'){const b=S.b.find(x=>x.t==='barracks');if(!b)return goTo(['build','barracks']);if(b.l<2)return goTo(['up','barracks']);return goTo(['train','s'])}
   if(k==='hero'){deselect();if(MAP.open)closeMap();openHero();return hlSel('[data-sk]:not([disabled])',true)}
+  if(k==='hosp'){if(!cnt('hospital'))return goTo(['build','hospital']);deselect();openArmy('hosp');return}
   if(k==='raid'){if(!cnt('barracks'))return goTo(['build','barracks']);deselect();openArmy('def');return}
   if(k==='map'){openMap();const now=Date.now(),c=S.world.sites.filter(s=>s.lvl>=a&&!(s.cool>now)).sort((x,y)=>x.lvl-y.lvl||Math.hypot(x.x-HOME.x,x.y-HOME.y)-Math.hypot(y.x-HOME.x,y.y-HOME.y))[0];
     if(c){MAP.sel=c.id;MAP.v.x=(c.x+HOME.x)/2;MAP.v.y=(c.y+HOME.y)/2;MAP.flash={id:c.id,until:now+6000};drawMapCard();hlSel('#mAtk')}}}
@@ -1312,14 +1419,15 @@ function openMenu(){openPanel('Menu','menu',()=>{const ago=Math.round((Date.now(
   $('#pB').innerHTML=`<div class="menu">
   <div class="li" id="mSnd"><div class="ic">${S.snd?'🔊':'🔇'}</div><div class="tx"><b>Dźwięk</b>${S.snd?'Włączony — dotknij, by wyciszyć':'Wyciszony — dotknij, by włączyć'}</div></div>
   <div class="li" id="mSave"><div class="ic">💾</div><div class="tx"><b>Zapis gry</b>Automatyczny · ostatni: ${ago<2?'przed chwilą':ago+' s temu'}. Przenieś postęp kodem.</div></div>
+  <div class="li" id="mPlayers"><div class="ic">👥</div><div class="tx"><b>Gracze</b>Zobacz wioski innych graczy i wyślij link do swojej</div></div>
   <div class="li" id="mHero"><div class="ic">${titleOf(S.lvl)[2]}</div><div class="tx"><b>Bohater</b>${titleOf(S.lvl)[1]} ${S.hero.name} · poz. ${S.lvl}${S.sp?' · ⭐ '+S.sp+' wolnych punktów':''}</div></div>
   <div class="li" id="mStats"><div class="ic">📊</div><div class="tx"><b>Statystyki</b>Najazdy, łupy, budynki, czas gry</div></div>
   <div class="li" id="mHelp"><div class="ic">❓</div><div class="tx"><b>Jak grać</b>Krótki poradnik</div></div>
   <div class="li" id="mNew"><div class="ic">🔄</div><div class="tx"><b>Zacznij od nowa</b>Usuwa całą osadę</div></div></div>`;
-  $('#mSnd').onclick=()=>{S.snd=S.snd?0:1;dirty=true;audioInit();sfx('tap');openMenu()};$('#mSave').onclick=openSaveDlg;$('#mStats').onclick=openStats;$('#mHero').onclick=openHero;$('#mHelp').onclick=openHelp;
+  $('#mSnd').onclick=()=>{S.snd=S.snd?0:1;dirty=true;audioInit();sfx('tap');openMenu()};$('#mSave').onclick=openSaveDlg;$('#mStats').onclick=openStats;$('#mHero').onclick=openHero;$('#mPlayers').onclick=openPlayers;$('#mHelp').onclick=openHelp;
   $('#mNew').onclick=()=>dialog('Na pewno?','<p style="text-align:center">Cała osada zostanie usunięta i zaczniesz od skromnej zagrody. Tego nie da się cofnąć.</p>',[['Anuluj',openMenu],['Usuń i zacznij',()=>{S=fresh();S.started=1;save();IDB.put(JSON.stringify(S));window.__restoring=1;location.reload()},'r']])})}
 function openStats(){const pt=Math.round((Date.now()-(S.born||Date.now()))/60000);dialog('Statystyki',[['🏰 Siedziba',hallName(hallL())+' poz. '+hallL()],['🗺️ Teren',side()+'×'+side()],['🏠 Budynki',S.b.filter(b=>b.l>=1).length],['🪖 Wojsko',nUnits(S.army)+nUnits(awayUnits())],['🏆 Odparte najazdy',S.st.raidWin||0],['🔥 Przegrane najazdy',S.st.raidLose||0],['💰 Złupione osady',S.st.loots||0],['🪓 Wycięte przeszkody',S.st.clear||0],['📜 Zadania',S.q+'/'+QUESTS.length],['⏱️ Od założenia',pt>120?Math.round(pt/60)+' godz.':pt+' min']].map(([a,b])=>`<div class="stat"><span>${a}</span><b>${b}</b></div>`).join(''),[['Wróć',openMenu]])}
-function openHelp(){dialog('Jak grać',`<div class="stat" style="display:block">🌾 <b>Zbieraj</b> — dotykaj dymków nad budynkami. Produkcja trwa także, gdy nie grasz.</div><div class="stat" style="display:block">🔨 <b>Buduj</b> — Budowanie → wybierz budynek → przeciągnij go na zielone kratki → ✔.</div><div class="stat" style="display:block">⬆️ <b>Ulepszaj</b> — dotknij budynku → Ulepsz. ${hallName(hallL())} odblokowuje nowe budynki i teren.</div><div class="stat" style="display:block">🛡️ <b>Broń się</b> — najazdy przychodzą co kilka minut. Pasek po lewej pokazuje, kto nadciąga i czy jesteś gotowy.</div><div class="stat" style="display:block">🗺️ <b>Łup</b> — na Mapie wybierz osadę i wyślij wojsko. Wraca z surowcami.</div><div class="stat" style="display:block">⭐ <b>Bohater</b> — dotknij ⭐ w lewym górnym rogu. Za każdy poziom dostajesz punkt umiejętności, który daje bonus całej wiosce.</div><div class="stat" style="display:block">🌙 <b>Noc</b> — co 12 minut zapada noc. Nocne najazdy są o 15% silniejsze.</div><div class="stat" style="display:block">⚕️ <b>Szpital</b> — część poległych trafia do szpitala; wylecz ich w Wojsko → Szpital.</div><div class="stat" style="display:block">⚔️ <b>Kontry</b> — piechota bije jazdę, jazda strzelców, strzelcy piechotę.</div>`,[['Wróć',openMenu]])}
+function openHelp(){dialog('Jak grać',`<div class="stat" style="display:block">🌾 <b>Zbieraj</b> — dotykaj dymków nad budynkami. Produkcja trwa także, gdy nie grasz.</div><div class="stat" style="display:block">🔨 <b>Buduj</b> — Budowanie → wybierz budynek → przeciągnij go na zielone kratki → ✔.</div><div class="stat" style="display:block">⬆️ <b>Ulepszaj</b> — dotknij budynku → Ulepsz. ${hallName(hallL())} odblokowuje nowe budynki i teren.</div><div class="stat" style="display:block">🛡️ <b>Broń się</b> — najazdy przychodzą co kilka minut. Pasek po lewej pokazuje, kto nadciąga i czy jesteś gotowy.</div><div class="stat" style="display:block">🗺️ <b>Łup</b> — na Mapie wybierz osadę i wyślij wojsko. Wraca z surowcami.</div><div class="stat" style="display:block">👥 <b>Gracze</b> — Menu → Gracze: lista osad innych graczy. Wyślij znajomemu link, a zobaczycie nawzajem swoje wioski.</div><div class="stat" style="display:block">🏅 <b>Wyzwania i Zadania dnia</b> — w Celach. Setki celów z nagrodami, codziennie nowe zadania.</div><div class="stat" style="display:block">⭐ <b>Bohater</b> — dotknij ⭐ w lewym górnym rogu. Za każdy poziom dostajesz punkt umiejętności, który daje bonus całej wiosce.</div><div class="stat" style="display:block">🌙 <b>Noc</b> — co 12 minut zapada noc. Nocne najazdy są o 15% silniejsze.</div><div class="stat" style="display:block">⚕️ <b>Szpital</b> — część poległych trafia do szpitala; wylecz ich w Wojsko → Szpital.</div><div class="stat" style="display:block">⚔️ <b>Kontry</b> — piechota bije jazdę, jazda strzelców, strzelcy piechotę.</div>`,[['Wróć',openMenu]])}
 async function packSave(){save();const j=JSON.stringify(S);try{if(window.CompressionStream){const b=await new Response(new Blob([j]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();let t='';new Uint8Array(b).forEach(x=>t+=String.fromCharCode(x));return 'OSADA1:'+btoa(t)}}catch(e){}return 'OSADA0:'+btoa(unescape(encodeURIComponent(j)))}
 async function unpackSave(code){code=code.trim();if(code.startsWith('OSADA1:')){const bin=atob(code.slice(7)),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return JSON.parse(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}
   if(code.startsWith('OSADA0:'))return JSON.parse(decodeURIComponent(escape(atob(code.slice(7)))));throw new Error('zły kod')}
@@ -1365,7 +1473,7 @@ function hud(){
   $('#dBuild').classList.toggle('on',canBuild);
   const hot=!!(RA||rs&&(rs.lvl==='bad'||rs.left<60));$('#dArmy').classList.toggle('on',hot);$('#dArmy').textContent=RA?'⚔️':rs&&rs.left<60?ft(rs.left):'!';
   $('#dMap').classList.toggle('on',!!MAP.news||S.marches.length>0);$('#dMap').textContent=S.marches.length||'!';
-  $('#dGoals').classList.toggle('on',ok);document.querySelector('.nb[data-n=goals]').classList.toggle('pulse',!ok&&S.q<6&&!PANEL);
+  const gn=(ok?1:0)+achReady()+dailyReady();$('#dGoals').classList.toggle('on',gn>0);$('#dGoals').textContent=gn;document.querySelector('.nb[data-n=goals]').classList.toggle('pulse',!ok&&S.q<6&&!PANEL);
 }
 $('#quest').onclick=()=>{audioInit();openGoals()};
 function toScreen(v){const p=v.clone().project(camera);return{x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight,vis:p.z<1}}
@@ -1434,7 +1542,7 @@ function sfx(k){if(!S.snd||!AC)return;switch(k){
 const clock=new THREE.Clock();let acc=0,smokeT=0;
 const selRing=new THREE.Mesh(new THREE.RingGeometry(.62,.72,40),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.85,depthWrite:false}));selRing.rotation.x=-Math.PI/2;scene.add(selRing);
 function frame(){requestAnimationFrame(frame);const dt=Math.min(.05,clock.getDelta()),T=clock.elapsedTime,now=performance.now();
-  acc+=dt;if(acc>.4){acc=0;checkJobs();tickMarches();raidTick();
+  acc+=dt;if(acc>.4){acc=0;if(!window.__visit){checkJobs();tickMarches();raidTick()}
     for(const k in recs){const r=recs[k],u=r.core.userData,b=S.b.find(q=>q.id==k);if(!u.fill||!b)continue;const f=b.l<1?0:stored(b)/intCap(b);
       if(u.fillMode==='scale')u.fill.forEach(m=>m.scale.set(1,.15+.85*f,1));else u.fill.forEach((m,i)=>m.visible=i<Math.ceil(f*u.fill.length))}
     if(Math.random()<.025)sfx('bird');hud();if(SEL)drawSel();if(PANEL&&['army','goals','build','hero'].includes(PANEL.kind))PANEL.render();if(MAP.open)drawMapCard();tickTimers();
@@ -1508,6 +1616,8 @@ if(!S.hero.made&&chest)chest=0;
 document.addEventListener('visibilitychange',()=>{if(document.hidden)save()});
 addEventListener('pagehide',save);addEventListener('beforeunload',save);document.addEventListener('freeze',save);
 setInterval(save,3000);
+setInterval(()=>netPush(),120000);setTimeout(()=>netPush(),8000);document.addEventListener('visibilitychange',()=>{if(document.hidden)netPush(true)});
+{const w=new URLSearchParams(location.search).get('wies');if(w&&/^[0-9a-f-]{36}$/i.test(w)&&(!S.net||S.net.id!==w))setTimeout(()=>{if(S.hero.made)visitVillage(w);else toast('Najpierw stwórz bohatera — potem odwiedzisz wioskę znajomego')},1800)}
 if(/FBAN|FBAV|FB_IAB|FBIOS|Instagram|Messenger|Line\/|TikTok|Snapchat|; wv\)/i.test(navigator.userAgent))setTimeout(()=>dialog('Otwórz w przeglądarce',`<div class="dlg-c"><div style="font-size:56px">⚠️</div><p>Grasz w okienku aplikacji (Messenger / Instagram / Facebook). Takie okienko <b>kasuje zapis gry</b> po zamknięciu.</p><p>Dotknij <b>⋯</b> lub <b>⋮</b> w rogu i wybierz <b>„Otwórz w przeglądarce”</b>.</p></div>`,[['Rozumiem',closePanel,'y']]),1600);
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
