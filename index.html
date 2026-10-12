@@ -84,7 +84,7 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .res .c b{display:block;height:100%;transform-origin:left;transform:scaleX(0);transition:transform .35s}
 .res.full .v{color:#ffcf5a}.res.bump{animation:bump .3s}
 @keyframes bump{50%{transform:scale(1.1)}}
-.qdone{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 50px);transform:translate(-50%,-140%);opacity:0;z-index:13;width:min(92vw,380px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.35);padding:8px 10px;display:flex;align-items:center;gap:9px;transition:transform .3s cubic-bezier(.2,1.3,.4,1),opacity .2s;pointer-events:none}
+.qdone{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 88px);transform:translate(-50%,-140%);opacity:0;z-index:13;width:min(92vw,380px);background:var(--paper);border:3px solid var(--ink);border-radius:16px;box-shadow:0 5px 0 rgba(0,0,0,.35);padding:8px 10px;display:flex;align-items:center;gap:9px;transition:transform .3s cubic-bezier(.2,1.3,.4,1),opacity .2s;pointer-events:none}
 .qdone.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}
 .qdone .ic{font-size:30px}.qdone .tx{flex:1;min-width:0;font-size:12.5px;line-height:1.25}.qdone .tx b{display:block;font:800 14px "Baloo 2";color:var(--green-d)}
 .hl{animation:hlp 1s ease-in-out infinite!important;position:relative;z-index:2}
@@ -93,6 +93,12 @@ canvas#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-actio
 .arrow{font-size:38px;animation:arr .7s ease-in-out infinite;filter:drop-shadow(0 3px 0 rgba(0,0,0,.4))}
 @keyframes arr{50%{translate:0 -12px}}
 .panel.tall{height:min(86dvh,760px)}
+.rstrip{position:fixed;left:6px;right:6px;top:calc(env(safe-area-inset-top) + 50px);z-index:9;display:none;align-items:center;gap:8px;padding:5px 10px;border-radius:12px;border:2px solid var(--ink);font:800 13px "Baloo 2";color:#fff;cursor:pointer;box-shadow:0 3px 0 rgba(0,0,0,.3);background:linear-gradient(#4a7a2a,#2f5a1a)}
+.rstrip.on{display:flex}.rstrip.mid{background:linear-gradient(#c79a2a,#9a6f12)}.rstrip.bad{background:linear-gradient(#d0493a,#9a2a1f)}.rstrip.hot{animation:hlp .8s ease-in-out infinite}
+.rstrip b{font-size:15px}.rstrip span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hintb{position:fixed;left:50%;bottom:calc(var(--navh) + env(safe-area-inset-bottom) + 14px);transform:translate(-50%,30px);opacity:0;pointer-events:none;z-index:14;width:min(92vw,400px);background:#fffdf3;border:3px solid var(--ink);border-radius:16px;padding:10px 12px;box-shadow:0 6px 0 rgba(0,0,0,.3);display:flex;gap:10px;align-items:flex-start;transition:.25s}
+.hintb.on{transform:translate(-50%,0);opacity:1;pointer-events:auto}.hintb .ic{font-size:30px}.hintb .tx{flex:1;font-size:13px;line-height:1.35}.hintb .tx b{display:block;font:800 15px "Baloo 2"}
+body.visit .rstrip{display:none!important}
 .visitbar{position:fixed;left:0;right:0;top:0;z-index:12;display:none;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;background:linear-gradient(#3d2a6b,#2a1d4d);border-bottom:3px solid var(--ink)}
 .visitbar b{display:block;font:800 17px "Baloo 2"}.visitbar small{color:#d9ccff;font-size:12px}.visitbar>div{flex:1;min-width:0}
 body.visit .visitbar{display:flex}body.visit .topbar,body.visit .nav,body.visit .qdone,body.visit .sel{display:none!important}
@@ -220,7 +226,7 @@ textarea,input{user-select:text;-webkit-user-select:text}
 .mcard .hd b{font:800 19px "Baloo 2";display:block}
 .mcard .hd small{font-size:12.5px;color:#6a5434}
 
-.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 52px);transform:translate(-50%,-14px);z-index:50;background:rgba(30,20,10,.92);color:#fff;padding:9px 16px;border-radius:14px;font:800 15.5px "Baloo 2";opacity:0;transition:.22s;pointer-events:none;max-width:92vw;text-align:center}
+.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 160px);transform:translate(-50%,-14px);z-index:50;background:rgba(30,20,10,.92);color:#fff;padding:9px 16px;border-radius:14px;font:800 15.5px "Baloo 2";opacity:0;transition:.22s;pointer-events:none;max-width:92vw;text-align:center}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 .fly{position:fixed;left:0;top:0;z-index:60;font-size:26px;pointer-events:none;transition:transform .7s cubic-bezier(.5,-0.3,.6,1),opacity .7s;filter:drop-shadow(0 2px 0 rgba(0,0,0,.4))}
 .pop{position:fixed;z-index:60;pointer-events:none;font:800 23px "Baloo 2";transform:translate(-50%,-50%);animation:up 1s ease-out forwards;white-space:nowrap}
@@ -241,6 +247,8 @@ textarea,input{user-select:text;-webkit-user-select:text}
 
 <div class="topbar" id="top"><div class="tlv" id="plvw"><span id="pti" class="pti">🧑‍🌾</span><b class="ol" id="plv">1</b><em id="pday">☀️</em><i><u id="pxp"></u></i></div><div id="bars" class="bars"></div></div>
 <div class="qdone" id="quest"></div>
+<div class="rstrip" id="rstrip"></div>
+<div class="hintb" id="hint"></div>
 <div class="visitbar" id="visitBar"></div>
 
 <nav class="nav" id="nav">
@@ -370,7 +378,7 @@ const QUESTS=[
   {ch:0,t:'Zbuduj Dom — mieszkańcy płacą złotem',p:()=>[cnt('house'),1],r:{wood:120,food:120},nav:'build'},
   {ch:0,t:'Wytnij 3 przeszkody (dotknij drzewa lub głazu)',p:()=>[S.st.clear||0,3],r:{gems:3}},
   {ch:0,t:'Zbuduj drugą Chatę budowniczego',p:()=>[cnt('hut'),2],r:{gems:5},nav:'build'},
-  {ch:0,t:'Powiększ teren osady (Budowanie → Teren)',p:()=>[S.land,1],r:{food:150},nav:'build'},
+  {ch:0,t:'Powiększ teren osady (Budowanie → Teren → wybierz obszar)',p:()=>[chunksOwned()>4?1:0,1],r:{food:150},nav:'build'},
   {ch:0,t:'Ulepsz Zagrodę do poz. 2',p:()=>[hallL(),2],r:{wood:300,gems:5}},
   {ch:1,t:'Zbuduj Kurnik — kury znoszą jajka',p:()=>[cnt('coop'),1],r:{wood:150},nav:'build'},
   {ch:1,t:'Zbuduj Koszary',p:()=>[cnt('barracks'),1],r:{food:200},nav:'build'},
@@ -397,7 +405,7 @@ const QUESTS=[
   {ch:3,t:'Złup Gród (poziom 6 lub wyższy)',p:()=>[Math.min(6,S.st.maxLoot||0),6],r:{gems:12},nav:'map'},
   {ch:4,t:'Rozbuduj Ratusz w Zamek (poz. 6)',p:()=>[hallL(),6],r:{gems:15}},
   {ch:4,t:'Odeprzyj 20 najazdów',p:()=>[S.st.raidWin||0,20],r:{gems:15},nav:'army'},
-  {ch:4,t:'Powiększ teren do maksimum (30×30)',p:()=>[S.land,10],r:{gems:15},nav:'build'},
+  {ch:4,t:'Odblokuj cały teren (36 obszarów)',p:()=>[chunksOwned(),36],r:{gems:15},nav:'build'},
   {ch:4,t:'Ulepsz Zamek do poz. 7',p:()=>[hallL(),7],r:{gems:20}},
   {ch:4,t:'Złup wrogi Zamek (poziom 10)',p:()=>[Math.min(10,S.st.maxLoot||0),10],r:{gems:40},nav:'map'},
   {ch:4,t:'Ulepsz Zamek do poz. 8',p:()=>[hallL(),8],r:{gems:30}},
@@ -428,7 +436,7 @@ fam('herolv',(v,k)=>({t:`Bohater osiąga poziom ${v} (${titleOf(v)[1]})`,p:()=>S
 fam('skill',(v,k)=>({t:`Przydziel ${v} punktów umiejętności`,p:()=>skTotal(),go:['hero']}),[5,10,20,30,40]);
 fam('heal',(v,k)=>({t:`Wylecz ${v} rannych`,p:()=>S.st.healed||0,go:['hosp'],r:RW(k,'food',150)}),[5,25,100,300]);
 fam('clear',(v,k)=>({t:`Wytnij ${v} przeszkód`,p:()=>S.st.clear||0,go:['obs'],r:RW(k,'wood',150)}),[10,25,50,80]);
-fam('land',(v,k)=>({t:`Powiększ teren do ${10+2*v}×${10+2*v}`,p:()=>S.land,go:['land']}),[2,4,6,8,10]);
+fam('land',(v,k)=>({t:`Odblokuj ${v} obszarów terenu (z 36)`,p:()=>chunksOwned(),go:['land']}),[6,10,16,24,36]);
 fam('story',(v,k)=>({t:`Ukończ ${v} zadań fabuły`,p:()=>S.q,go:null}),[10,20,30,42]);
 fam('daily',(v,k)=>({t:`Wykonaj ${v} zadań dnia`,p:()=>S.st.dailyDone||0,go:null}),[3,10,30,100,250]);
 fam('ups',(v,k)=>({t:`Ukończ ${v} budów i ulepszeń`,p:()=>S.st.ups||0,go:null,r:RW(k,'wood',150)}),[10,30,80,200,500]);
@@ -499,7 +507,7 @@ function migrate(o){const s=fresh();s.b=[];s.obs=[];const off=3;
   addObstacles(s,0,.13,true);s.migrated=1;return s}
 function normalize(s){s.army=s.army||{};for(const u in UNITS)s.army[u]=s.army[u]||0;
   s.train=s.train&&!Array.isArray(s.train)?s.train:{};TRAINB.forEach(b=>s.train[b]=s.train[b]||[]);
-  s.marches=s.marches||[];s.st=s.st||{};s.land=s.land||0;s.sk=s.sk||{};if(s.sp==null)s.sp=Math.max(0,(s.lvl||1)-1);s.hero=s.hero||{name:'Bohater'};s.wounded=s.wounded||{};for(const u in UNITS)s.wounded[u]=s.wounded[u]||0;s.heal=s.heal||[];s.ach=s.ach||{};
+  s.marches=s.marches||[];s.st=s.st||{};s.land=s.land||0;s.chunks=s.chunks||[];s.sk=s.sk||{};if(!s.seenB){s.seenB={};for(const t in DEF)if(DEF[t].cnt?DEF[t].cnt[Math.min(8,(s.b.find(b=>b.t==='hall')||{l:1}).l)-1]>0:((s.b.find(b=>b.t==='hall')||{l:1}).l>=(DEF[t].hall||1)))s.seenB[t]=1}if(s.sp==null)s.sp=Math.max(0,(s.lvl||1)-1);s.hero=s.hero||{name:'Bohater'};s.wounded=s.wounded||{};for(const u in UNITS)s.wounded[u]=s.wounded[u]||0;s.heal=s.heal||[];s.ach=s.ach||{};
   if(!s.qv){s.q=qmap(s.q||0);s.qv=2}if(s.qv===2){s.q=qmap2(s.q||0);s.qv=3}s.rare=Object.assign({iron:0,relic:0,crystal:0},s.rare);s.res=Object.assign({food:0,wood:0,stone:0,gold:0},s.res);return s}
 const readLS=k=>{try{const v=JSON.parse(localStorage.getItem(k));return v&&v.b?v:null}catch(e){return null}};
 let S=readLS(KEY);{const bk=readLS(KEY+'.bak');if(bk&&(!S||(bk.last||0)>(S.last||0)))S=bk}
@@ -525,7 +533,17 @@ const cnt=t=>S.b.filter(b=>b.t===t&&b.l>=1).length;
 const cntAll=t=>S.b.filter(b=>b.t===t).length;
 const maxL=t=>Math.max(0,...S.b.filter(b=>b.t===t).map(b=>b.l));
 const side=()=>Math.min(G,10+2*S.land);
-const unl=(i,j)=>{const s=side(),a=(G-s)/2;return i>=a&&i<a+s&&j>=a&&j<a+s};
+/* teren: bazowy kwadrat + dokupione obszary 5×5 */
+const CH=5,NCH=G/CH,CHMAX=[2,4,7,10,15,20,26,32];let UNLC=null;
+function buildUnl(){UNLC=new Uint8Array(G*G);const s=side(),a=(G-s)/2,cs=new Set(S.chunks||[]);for(let i=0;i<G;i++)for(let j=0;j<G;j++)UNLC[i*G+j]=(i>=a&&i<a+s&&j>=a&&j<a+s)||cs.has(Math.floor(i/CH)+','+Math.floor(j/CH))?1:0}
+const unl=(i,j)=>{if(i<0||j<0||i>=G||j>=G)return false;if(!UNLC)buildUnl();return UNLC[i*G+j]===1};
+const landKey=()=>S.land+'|'+(S.chunks||[]).join(';');
+function chunkCells(ci,cj){let n=0;for(let x=0;x<CH;x++)for(let y=0;y<CH;y++)if(unl(ci*CH+x,cj*CH+y))n++;return n}
+const chunkFull=(ci,cj)=>chunkCells(ci,cj)===CH*CH,chunkAny=(ci,cj)=>ci>=0&&cj>=0&&ci<NCH&&cj<NCH&&chunkCells(ci,cj)>0;
+function chunksOwned(){let n=0;for(let a=0;a<NCH;a++)for(let b=0;b<NCH;b++)if(chunkFull(a,b))n++;return n}
+const unlCells=()=>{if(!UNLC)buildUnl();return UNLC.reduce((a,v)=>a+v,0)};
+const chunkCost=n=>{const c={wood:Math.round(150*Math.pow(1.13,n-1)),food:Math.round(110*Math.pow(1.13,n-1))};if(n>=4)c.stone=Math.round(90*Math.pow(1.14,n-4));if(n>=10)c.gold=Math.round(110*Math.pow(1.14,n-10));return c};
+function landCands(){const out=[];for(let a=0;a<NCH;a++)for(let b=0;b<NCH;b++)if(!chunkFull(a,b)&&(chunkAny(a,b)||[[1,0],[-1,0],[0,1],[0,-1]].some(([x,y])=>chunkAny(a+x,b+y))))out.push([a,b]);return out}
 const era=()=>{const h=hallL();return h<=2?0:h<=5?1:2};
 const charm=()=>Math.min(30,S.b.reduce((a,b)=>a+(b.l>=1&&DEF[b.t].charm||0),0));
 const sk=k=>S.sk&&S.sk[k]||0;
@@ -556,6 +574,13 @@ function addXP(n){S.xp+=n;while(S.xp>=xpNeed(S.lvl)){S.xp-=xpNeed(S.lvl);const t
   if(t1!==t0){banner(`${t1[2]} ${t1[1]}!`,`${S.hero.name} awansował · +1 punkt umiejętności`);sfx('win');heroFx(30)}else{banner(`Bohater poz. ${S.lvl}!`,'+1 punkt umiejętności · +2 💎');sfx('up');heroFx(14)}people.hKey=null;dirty=true}}
 const costHTML=c=>Object.entries(c).map(([k,v])=>`<span class="${have(k)<v?'no':''}">${ICON(k)} ${fmt(v)}</span>`).join('');
 const costTxt=c=>Object.entries(c).map(([k,v])=>ICON(k)+fmt(v)).join(' ');
+const GEMV={food:100,wood:100,stone:70,gold:35,iron:2,relic:.5,crystal:.25};
+function missingOf(c){const m={};for(const[k,v]of Object.entries(c)){if(k==='gems')continue;const d=v-have(k);if(d>0)m[k]=Math.ceil(d)}return m}
+const gemsFor=m=>Object.entries(m).reduce((a,[k,v])=>a+v/GEMV[k],0);
+function ensure(c,ok,what){if(canPay(c))return ok();const m=missingOf(c),g=Math.max(1,Math.ceil(gemsFor(m)))+(c.gems&&S.gems<c.gems?0:0);
+  for(const k in m)if(RES[k]&&c[k]>capOf(k)){toast(`${RES[k].e} Za mały magazyn — ulepsz ${k==='gold'?'Skarbiec':'Spichlerz'}`);sfx('err');return}
+  dialog('Brakuje surowców',`<div class="dlg-c"><div style="font-size:46px">💎</div><p>${what?'Na: <b>'+what+'</b><br>':''}Brakuje:</p></div><div class="cost">${Object.entries(m).map(([k,v])=>`<span>${ICON(k)} ${fmt(v)}</span>`).join('')}</div><p class="note" style="text-align:center">Możesz dokupić brakujące surowce za klejnoty. Masz ${fmt(S.gems)} 💎.</p>`,
+    [['Anuluj',closePanel],[`Dokup za ${g} 💎`,()=>{if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;for(const k in m){if(RARE[k])S.rare[k]+=m[k];else S.res[k]+=m[k]}dirty=true;closePanel();sfx('coin');ok()},'p',S.gems<g]])}
 const gemCost=sec=>Math.max(1,Math.ceil(sec/90));
 /* army */
 const armyCap=()=>10+10*maxL('barracks')+5*maxL('range')+5*maxL('stable');
@@ -568,7 +593,7 @@ const hospCap=()=>{const l=maxL('hospital');return l?5+5*l:0};
 function woundUnits(lost){const out={};if(!cnt('hospital'))return out;const fr=Math.min(.9,.5+.08*sk('medic'));let free=hospCap()-sumH(S.wounded)-healH();
   for(const u in lost){const X=UNITS[u],w=Math.max(0,Math.min(Math.round(lost[u]*fr),Math.floor(free/X.h)));if(w){S.wounded[u]+=w;free-=w*X.h;out[u]=w}}return out}
 function healUnit(u,n){const X=UNITS[u],B=S.b.find(b=>b.t==='hospital'&&b.l>=1);if(!B)return 0;let done=0;
-  for(let k=0;k<n&&S.wounded[u]>0;k++){const c={};for(const r in X.cost)c[r]=Math.ceil(X.cost[r]*.3);if(!canPay(c)){if(!done)toast('Brakuje surowców na leczenie');break}
+  for(let k=0;k<n&&S.wounded[u]>0;k++){const c={};for(const r in X.cost)c[r]=Math.ceil(X.cost[r]*.3);if(!canPay(c)){if(!done){ensure(c,()=>{healUnit(u,1);if(PANEL&&PANEL.kind==='army'){$('#pB').dataset.h='';renderArmy()}},'leczenie: '+X.n);return 0}break}
     pay(c);S.wounded[u]--;const last=S.heal.length?S.heal[S.heal.length-1].end:Date.now();S.heal.push({u,end:Math.max(last,Date.now())+X.t*800*Math.max(.4,1-.08*(B.l-1))});done++}
   if(done){sfx('train');dirty=true}return done}
 const nUnits=U=>Object.values(U).reduce((a,b)=>a+b,0);
@@ -878,12 +903,13 @@ const clouds=[];for(let i=0;i<7;i++){const g=new THREE.Group();const n=4+(i%3);f
   g.scale.setScalar(1.6);g.position.set(-45+i*13,42+Math.random()*4,-28+Math.random()*56);scene.add(g);clouds.push(g)}
 const areaG=new THREE.Group();scene.add(areaG);
 function buildArea(){while(areaG.children.length)areaG.remove(areaG.children[0]);
-  const s=side(),a=s/2,dim=M('#1d3a12',{t:.3});
-  [[-H,-H,G,H-a],[-H,a,G,H-a],[-H,-a,H-a,s],[a,-a,H-a,s]].forEach(([x,z,w,d])=>{if(w<=0||d<=0)return;const m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),dim);m.rotation.x=-Math.PI/2;m.position.set(x+w/2,.02,z+d/2);areaG.add(m)});
-  const tmp=new THREE.Group();
-  for(let k=0;k<=s;k++)[[-a+k,-a],[-a+k,a],[-a,-a+k],[a,-a+k]].forEach(([x,z])=>cy(tmp,.04,.05,.32,'#c9a46a',x,0,z,5));
-  [[0,-a,s,0],[0,a,s,0],[-a,0,s,1],[a,0,s,1]].forEach(([x,z,l,rot])=>[.12,.24].forEach(y=>bx(tmp,rot?.03:l,.035,rot?l:.03,'#b88f55',x,y,z)));
-  mergeStatic([tmp],areaG,false)}
+  const dimG=new THREE.Group(),pg=geo('dimq',()=>{const q=new THREE.PlaneGeometry(1,1);q.rotateX(-Math.PI/2);return q}),dim=M('#1d3a12',{t:.3});
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++)if(!unl(i,j)){const m=new THREE.Mesh(pg,dim);m.position.set(i-H+.5,.02,j-H+.5);dimG.add(m)}
+  const tmp=new THREE.Group(),posts=new Set();
+  const edge=(x1,z1,x2,z2)=>{const cx=(x1+x2)/2,cz=(z1+z2)/2,hz=x1===x2;[.12,.24].forEach(y=>bx(tmp,hz?.03:1,.035,hz?1:.03,'#b88f55',cx,y,cz));[[x1,z1],[x2,z2]].forEach(([x,z])=>{const k=x+','+z;if(!posts.has(k)){posts.add(k);cy(tmp,.04,.05,.32,'#c9a46a',x,0,z,5)}})};
+  for(let i=0;i<G;i++)for(let j=0;j<G;j++){if(!unl(i,j))continue;const x=i-H,z=j-H;
+    if(!unl(i-1,j))edge(x,z,x,z+1);if(!unl(i+1,j))edge(x+1,z,x+1,z+1);if(!unl(i,j-1))edge(x,z,x+1,z);if(!unl(i,j+1))edge(x,z+1,x+1,z+1)}
+  if(dimG.children.length)mergeStatic([dimG],areaG,false);mergeStatic([tmp],areaG,false)}
 /* placement grid — every cell visible */
 const cellGeo=new THREE.PlaneGeometry(.9,.9);cellGeo.rotateX(-Math.PI/2);
 const cells=new THREE.InstancedMesh(cellGeo,new THREE.MeshBasicMaterial({transparent:true,opacity:.62,depthWrite:false}),G*G);
@@ -904,7 +930,7 @@ const bPos=b=>{const s=DEF[b.t].s;return new V3(b.i-H+s/2,0,b.j-H+s/2)};
 const oPos=o=>new V3(o.i-H+.5,0,o.j-H+.5);
 let lastSide=0,lastEra=-1,OCC=null,RA=null,PL=null,SEL=null;
 function sync(){
-  if(side()!==lastSide){lastSide=side();buildArea();layoutCells()}
+  if(landKey()!==lastSide){lastSide=landKey();UNLC=null;buildArea();layoutCells()}
   const e=era();if(e!==lastEra){lastEra=e;for(const k in recs)recs[k].key=''}
   const ids=new Set();
   for(const b of S.b){ids.add(b.id);let r=recs[b.id];const key=`${b.t}|${b.l}|${!!b.job}|${b.job?.kind}|${b.t==='hospital'?Math.min(3,nUnits(S.wounded)+S.heal.length):''}`;
@@ -989,7 +1015,7 @@ canvas.addEventListener('wheel',e=>{e.preventDefault();cam.d=clamp(cam.d*(e.delt
 /* =====================================================================
    INTERACTION
 ===================================================================== */
-function tap(x,y){if(window.__visit){const r=pick(x,y);if(r&&r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b)toast(`${b.t==='hall'?hallName(b.l):DEF[b.t].n} · poz. ${b.l}`)}return}
+function tap(x,y){if(LP){const p=groundAt(x,y);if(!p)return;const i=Math.floor(p.x+H),j=Math.floor(p.z+H),a=Math.floor(i/CH),b=Math.floor(j/CH);if(LP.c.some(c=>c[0]===a&&c[1]===b))buyChunk(a,b);else toast('Wybierz żółty obszar przy granicy osady');return}if(window.__visit){const r=pick(x,y);if(r&&r.k==='b'){const b=S.b.find(q=>q.id===r.id);if(b)toast(`${b.t==='hall'?hallName(b.l):DEF[b.t].n} · poz. ${b.l}`)}return}
   if(PL){const p=groundAt(x,y);if(p)moveGhost(p.x,p.z);return}
   let r=pick(x,y);if(!r){const p=groundAt(x,y);if(p){const i=Math.floor(p.x+H),j=Math.floor(p.z+H),o=S.obs.find(o=>o.i===i&&o.j===j);if(o)r={k:'o',id:o.id}}}
   if(!r){deselect();return}
@@ -1015,7 +1041,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
     else if(d.prod)inf=`${ICON(d.prod)} ${fmt(rate(b))}/min · zapas ${fmt(stored(b))}/${fmt(intCap(b))}`;
     else if(b.t==='storage')inf=`Pojemność +${fmt(800*Math.pow(1.7,b.l-1))} 🌾🪵🪨`;
     else if(b.t==='vault')inf=`Pojemność +${fmt(1500*Math.pow(1.8,b.l-1))} 🪙`;
-    else if(b.t==='hall')inf=`${ERAS[era()]} · teren ${side()}×${side()} · budowniczowie ${builders()}`;
+    else if(b.t==='hall')inf=`${ERAS[era()]} · teren ${unlCells()} pól · budowniczowie ${builders()}`;
     else if(TRAINB.includes(b.t))inf=`Armia ${usedH()}/${armyCap()} miejsc · ${S.train[b.t].length?'szkoli: '+S.train[b.t].length:'kolejka pusta'}`;
     else if(b.t==='hospital')inf=`Łóżka ${sumH(S.wounded)+healH()}/${hospCap()} · ranni: ${nUnits(S.wounded)}`;
     else if(b.t==='smithy')inf=`+${b.l*6}% siły wojska`;
@@ -1025,6 +1051,7 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
     else if(b.t==='hut')inf=`Budowniczowie: ${builders()} · wolni: ${freeB()}`;
     acts.push(['ℹ️','Info','','',()=>infoDialog(b)]);
     if(b.job)acts.push(['⚡','Ukończ',`${gemCost((b.job.end-Date.now())/1000)}💎`,'p',()=>speed(b)]);
+    if(d.prod&&b.l>=1&&!b.job&&stored(b)<intCap(b)-1){const g=fillGems(b);acts.push(['⚡','Napełnij',g+'💎','p',()=>fillNow(b)])}
     if(d.prod&&b.l>=1&&stored(b)>=1){const cl=cdLeft(b);acts.push([ICON(d.prod),'Zbierz',cl?'za '+Math.ceil(cl)+'s':'',cl?'':'g',e=>collect(b,e.clientX,e.clientY),cl>0])}
     if(!b.job&&b.l>=1&&d.cat!=='dec'&&b.t!=='hut'&&b.t!=='wall'){const ml=maxLvl(b.t),c=b.l<ml?upCost(b):null;
       acts.push(['⬆️','Ulepsz',c?costTxt(c):b.l>=(b.t==='hall'?8:d.max)?'MAX':hallName(hallL())+' ↑','y',()=>upDialog(b),!c])}
@@ -1043,13 +1070,27 @@ function drawSel(){if(!SEL)return;let n='',inf='',acts=[];
   const A=$('#acts');A.innerHTML='';acts.forEach(([ic,l,sub,cls,fn,off])=>{const el=document.createElement('button');el.className='act '+cls+(off?' off':'')+(HL.act===l&&HL.arrow&&Date.now()<HL.arrow.until?' hl':'');
     el.innerHTML=`<div class="o">${ic}</div><span class="ol">${l}</span>${sub?`<em>${sub}</em>`:''}`;el.onclick=e=>{if(off){toast(String(sub).startsWith('za ')?'⏳ Następny zbiór '+sub:sub==='MAX'?'Maksymalny poziom':'Najpierw ulepsz '+hallName(hallL()));sfx('err');return}fn(e)};A.appendChild(el)});
   $('#sel').classList.add('on')}
+const fillGems=b=>Math.max(1,Math.ceil((intCap(b)-stored(b))/rate(b)/10));
+function fillNow(b){const g=fillGems(b);if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;b.t0=Date.now()-intCap(b)/rate(b)*60000-1000;b.lc=0;dirty=true;sfx('up');const s=toScreen(bPos(b).setY(1));collect(b,s.x,s.y);$('#acts').dataset.sig='';drawSel()}
+function speedQueue(q,label){if(!q.length)return;const sec=(q[q.length-1].end-Date.now())/1000,g=gemCost(sec);if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;q.forEach(x=>x.end=Date.now());checkJobs();dirty=true;sfx('up');toast('⚡ '+label+' — gotowe!')}
 function speed(t){const sec=(t.job.end-Date.now())/1000,g=gemCost(sec);if(S.gems<g){toast('Za mało klejnotów 💎');sfx('err');return}S.gems-=g;t.job.end=Date.now();checkJobs();dirty=true}
-function clearObs(o,c){if(freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return}if(!canPay(c)){toast('Brakuje surowców');sfx('err');return}
+function clearObs(o,c){if(freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return}if(!canPay(c)){ensure(c,()=>clearObs(o,c),'wycinka');return}
   pay(c);o.job={kind:'clear',start:Date.now(),end:Date.now()+(6+hallL()*2)*1000};sfx('chop');deselect()}
 function startUpgrade(b){const c=upCost(b);if(freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return false}
-  if(!canPay(c)){toast('Brakuje surowców');sfx('err');return false}
+  if(!canPay(c)){ensure(c,()=>{startUpgrade(b)},'ulepszenie: '+(b.t==='hall'?hallName(b.l):DEF[b.t].n));return false}
   pay(c);b.job={kind:'up',start:Date.now(),end:Date.now()+upTime(b)*1000*buildMul()};sfx('tap');sync();drawSel();return true}
-function buyLand(){const n=S.land+1;if(n>10)return;if(n>LANDMAX[hallL()-1]){toast(`Ulepsz ${hallName(hallL())}, by kupić więcej terenu`);sfx('err');return}const c=landCost(n);if(!canPay(c)){toast('Brakuje surowców');sfx('err');return}
+let LP=null;
+const LPMAT=new THREE.MeshBasicMaterial({color:0xffd34d,transparent:true,opacity:.38,depthWrite:false});
+function startLandPick(){closePanel();deselect();if(PL)endPlace();if(MAP.open)closeMap();const ex=chunksOwned()-4;
+  if(ex>=CHMAX[hallL()-1]){toast(`Ulepsz ${hallName(hallL())}, by kupić więcej terenu`);sfx('err');return}
+  endLandPick();LP={g:new THREE.Group(),c:landCands()};if(!LP.c.length){toast('Cały teren jest już Twój!');LP=null;return}
+  LP.c.forEach(([a,b])=>{const m=new THREE.Mesh(geo('lpq',()=>{const q=new THREE.PlaneGeometry(4.8,4.8);q.rotateX(-Math.PI/2);return q}),LPMAT);m.position.set(a*CH-H+2.5,.09,b*CH-H+2.5);m.renderOrder=4;LP.g.add(m)});scene.add(LP.g);
+  $('#plhint').innerHTML=`🗺️ Dotknij <b>żółtego obszaru</b> (5×5 pól), by go kupić<br>Koszt: ${costTxt(chunkCost(ex+1))} <button class="btn r s" id="lpX" style="margin-left:6px">Zakończ</button>`;$('#plhint').classList.add('on');$('#lpX').onclick=endLandPick;cam.d=Math.max(cam.d,30);sfx('tap')}
+function endLandPick(){if(!LP)return;scene.remove(LP.g);LP=null;$('#plhint').classList.remove('on')}
+function buyChunk(a,b){const ex=chunksOwned()-4,c=chunkCost(ex+1);
+  dialog('Kupić ten obszar?',`<div class="dlg-c"><div style="font-size:52px">🗺️</div><p>Nowy teren 5×5 pól. Dzikie drzewa i głazy na nim wytniesz — dają surowce.</p></div><div class="cost">${costHTML(c)}</div>`,[['Anuluj',closePanel],['Kup teren',()=>{closePanel();ensure(c,()=>{pay(c);S.chunks.push(a+','+b);addXP(8);sync();const p=new V3(a*CH-H+2.5,0,b*CH-H+2.5);burst(p,30);starFx(p,5);sfx('build');banner('Teren powiększony!',`${unlCells()} pól osady`);dirty=true;
+      if(chunksOwned()-4<CHMAX[hallL()-1])startLandPick();else endLandPick()},'nowy obszar terenu')},'y']])}
+function buyLand(){startLandPick();return;const n=S.land+1;if(n>10)return;if(n>LANDMAX[hallL()-1]){toast(`Ulepsz ${hallName(hallL())}, by kupić więcej terenu`);sfx('err');return}const c=landCost(n);if(!canPay(c)){toast('Brakuje surowców');sfx('err');return}
   pay(c);S.land=n;addXP(8);sync();const a=side()/2;for(let k=0;k<4;k++)burst(new V3([-a,a,0,0][k],0,[0,0,-a,a][k]),14);sfx('build');banner('Teren powiększony!',`${side()}×${side()} pól`);closePanel();cam.d=Math.min(44,cam.d+2);dirty=true}
 
 /* ---------- jobs & training ---------- */
@@ -1067,7 +1108,7 @@ function checkJobs(silent){const now=Date.now();let any=0;
   for(const B of TRAINB){const q=S.train[B];while(q.length&&now>=q[0].end){const u=q.shift().u;S.army[u]++;S.st['tr_'+u]=(S.st['tr_'+u]||0)+1;any++;if(!silent&&!q.length)toast(`${UNITS[u].e} Szkolenie zakończone`)}}
   if(any){dirty=true;sync();if(SEL)drawSel()}return any}
 function trainUnit(u,n=1){const X=UNITS[u],B=S.b.find(b=>b.t===X.b&&b.l>=1);if(!B){toast(`Zbuduj ${DEF[X.b].n}`);sfx('err');return}
-  let done=0;for(let k=0;k<n;k++){if(usedH()+X.h>armyCap()){if(!done)toast('Brak miejsca w armii — ulepsz Koszary, Strzelnicę lub Stajnię');break}if(!canPay(X.cost)){if(!done)toast('Brakuje surowców');break}
+  let done=0;for(let k=0;k<n;k++){if(usedH()+X.h>armyCap()){if(!done)toast('Brak miejsca w armii — ulepsz Koszary, Strzelnicę lub Stajnię');break}if(!canPay(X.cost)){if(!done){ensure(X.cost,()=>{trainUnit(u,1);if(PANEL&&PANEL.kind==='army'){$('#pB').dataset.h='';renderArmy()}},X.n);return 0}break}
     pay(X.cost);const q=S.train[X.b],last=q.length?q[q.length-1].end:Date.now();q.push({u,end:Math.max(last,Date.now())+X.t*1000*Math.max(.5,1-.05*(B.l-1))});done++}
   if(done){sfx('train');dirty=true}else sfx('err');return done}
 
@@ -1206,7 +1247,7 @@ function drawMapBg(){const c=document.createElement('canvas'),K=.6;c.width=c.hei
   x.restore();land();x.lineWidth=6;x.strokeStyle='#8a7a52';x.stroke();
   x.save();x.translate(1780,1780);x.fillStyle='rgba(90,60,20,.6)';for(let i=0;i<4;i++){x.rotate(Math.PI/2);x.beginPath();x.moveTo(0,-90);x.lineTo(16,0);x.lineTo(-16,0);x.closePath();x.fill()}x.font='bold 34px serif';x.fillText('N',-11,-100);x.restore();
   return c}
-function openMap(){closePanel();deselect();endPlace();if(!S.world)S.world=genWorld();MAP.open=true;MAP.news=0;$('#map').classList.add('on');resizeMap();if(!MAP.bg)MAP.bg=drawMapBg();
+function openMap(){setTimeout(()=>hint('map','🗺️','Mapa krainy','Okrągłe znaczki to osady do łupienia ⚔️, romby ⛏️🕳️❌ to miejsca na wyprawy poszukiwawcze po rzadkie surowce. Liczba w rogu to poziom.'),600);closePanel();deselect();endPlace();if(!S.world)S.world=genWorld();MAP.open=true;MAP.news=0;$('#map').classList.add('on');resizeMap();if(!MAP.bg)MAP.bg=drawMapBg();
   MAP.v={x:HOME.x,y:HOME.y,z:Math.min(innerWidth,innerHeight)/780};MAP.sel=null;MAP.spot=null;if(!S.world.spots)S.world.spots=genSpots(S.world);drawMapCard();sfx('tap');requestAnimationFrame(mapLoop)}
 function closeMap(){MAP.open=false;$('#map').classList.remove('on')}
 $('#mX').onclick=closeMap;$('#mPl').onclick=()=>{closeMap();openPlayers()};
@@ -1290,7 +1331,6 @@ function renderAttack(sid){const s=site(sid),{pe,ee}=attackBattle(ATK,s.E),k=pe/
 ===================================================================== */
 function startPlace(t,id){deselect();closePanel();if(PL)endPlace(true);
   if(!id){if(cntAll(t)>=allowed(t)){toast('Limit osiągnięty — ulepsz '+hallName(hallL()));sfx('err');return}
-    if(!canPay(newCost(t))){toast('Brakuje surowców');sfx('err');return}
     if(DEF[t].t0&&freeB()<1){toast('👷 Wszyscy budowniczowie są zajęci');sfx('err');return}}
   const b=id&&S.b.find(q=>q.id===id),g=makeMesh(t,b?b.l:1);scene.add(g);
   PL={t,id,g,i:0,j:0,rot:b?b.rot||0:(S.lastRot||0)};g.rotation.y=PL.rot*Math.PI/2;if(b){PL.i=b.i;PL.j=b.j}else{const sp=findSpot(t);PL.i=sp[0];PL.j=sp[1]}
@@ -1305,7 +1345,7 @@ $('#plRot').onclick=()=>{if(!PL)return;PL.rot=(PL.rot+1)%4;PL.g.rotation.y=PL.ro
 $('#plNo').onclick=()=>{endPlace();sfx('tap')};
 $('#plOk').onclick=()=>{if(!PL||!PL.ok)return;const{t,id,i,j}=PL;
   if(id){const b=S.b.find(q=>q.id===id);b.i=i;b.j=j;b.rot=PL.rot;endPlace();recs[id].pop=performance.now();sfx('place');dirty=true;return}
-  const c=newCost(t);if(!canPay(c)){toast('Brakuje surowców');return endPlace()}
+  const c=newCost(t);if(!canPay(c)){ensure(c,()=>$('#plOk').onclick(),DEF[t].n);return}
   pay(c);const d=DEF[t],b={id:S.nid++,t,i,j,l:d.t0?0:1,t0:Date.now(),rot:PL.rot};S.lastRot=PL.rot;if(d.t0)b.job={kind:'build',start:Date.now(),end:Date.now()+d.t0*1000*buildMul()};
   S.b.push(b);endPlace();burst(bPos(b));sfx('place');if(!d.t0)setTimeout(()=>sfx('coin'),120);addXP(2);dirty=true;if(!d.t0)recs[b.id].pop=performance.now();
   if((t==='wall'||d.cat==='dec')&&cntAll(t)<allowed(t)&&canPay(newCost(t))){startPlace(t);for(const[a,q]of[[1,0],[0,1],[-1,0],[0,-1]])if(canPlace(t,i+a,j+q)){PL.i=i+a;PL.j=j+q;posGhost();break}}};
@@ -1330,9 +1370,16 @@ function thumb(t,l=1){const k=t+l+era();if(thumbs[k])return thumbs[k];
   const s=DEF[t].s,cm=new THREE.PerspectiveCamera(30,1,.1,50),dd=s*1.25+.9;cm.position.set(dd*.75,dd*.75,dd*.75);cm.lookAt(0,s*.28+.12,0);thR.render(sc,cm);return thumbs[k]=thR.domElement.toDataURL()}
 /* Budowanie */
 let shopCat='res';
-function openBuild(){openPanel('Budowanie','build',renderBuild)}
+function openBuild(){S.seenB=S.seenB||{};Object.keys(DEF).forEach(t=>{if(allowed(t)>0)S.seenB[t]=1});dirty=true;openPanel('Budowanie','build',renderBuild)}
 function renderBuild(){tabs([['res','🌾 Surowce'],['ani','🐔 Zwierzęta'],['bld','🏠 Budynki'],['war','⚔️ Wojsko'],['spec','✨ Specjalne'],['dec','🌷 Ozdoby'],['land','🗺️ Teren']],shopCat,t=>{shopCat=t;renderBuild()});
-  if(shopCat==='land'){const n=S.land+1,max=LANDMAX[hallL()-1];let h=`<div class="dlg-c"><div style="font-size:60px">🗺️</div><h4>Teren osady: ${side()}×${side()} pól</h4></div>`;
+  if(shopCat==='land'){const own=chunksOwned(),ex=own-4,mx=CHMAX[hallL()-1],c=chunkCost(ex+1);
+    let h=`<div class="dlg-c"><div style="font-size:60px">🗺️</div><h4>Teren osady: ${unlCells()} pól · ${own}/36 obszarów</h4></div><p class="note">Teren dzieli się na obszary 5×5 pól. Sam wybierasz, który sąsiedni obszar dokupić.</p>
+      <div class="stat"><span>Dokupione obszary</span><b>${Math.max(0,ex)} / ${mx} (${hallName(hallL())} poz. ${hallL()})</b></div>`;
+    if(own>=36)h+='<p class="note" style="text-align:center">Cały teren jest już Twój!</p>';
+    else{h+=`<div class="stat"><span>Koszt następnego obszaru</span><b>${costTxt(c)}</b></div>`;
+      h+=ex>=mx?`<button class="btn" style="width:100%" disabled>Ulepsz ${hallName(hallL())}, by kupić więcej</button>`:`<button class="btn y" style="width:100%" id="bLand">🗺️ Wybierz obszar na mapie wioski</button>`}
+    setPB(h,pb=>{const b=pb.querySelector('#bLand');if(b)b.onclick=startLandPick});return}
+  if(shopCat==='landOLD'){const n=S.land+1,max=LANDMAX[hallL()-1];let h=`<div class="dlg-c"><div style="font-size:60px">🗺️</div><h4>Teren osady: ${side()}×${side()} pól</h4></div>`;
     if(n>10)h+='<p class="note" style="text-align:center">Cały teren jest już Twój — 30×30 pól!</p>';
     else{const c=landCost(n),ns=Math.min(G,10+2*n);h+=stat('Wielkość terenu',`${side()}×${side()}`,`${ns}×${ns}`)+`<div class="stat"><span>Wolne miejsca do budowy</span><b>+${ns*ns-side()*side()} pól</b></div><div class="cost">${costHTML(c)}</div>`;
       h+=n>max?`<button class="btn" style="width:100%" disabled>Wymaga: ${hallName(hallL()+1)} poz. ${LANDMAX.findIndex(x=>x>=n)+1}</button>`:`<button class="btn y" style="width:100%" id="bLand" ${canPay(c)?'':'disabled'}>Powiększ teren</button>`;
@@ -1350,12 +1397,12 @@ function upDialog(b){const d=DEF[b.t],c=upCost(b),t=upTime(b)*buildMul(),nl=b.l+
   if(b.t==='smithy')rows+=stat('Siła wojska',`+${b.l*6}%`,`+${nl*6}%`);
   if(b.t==='tower')rows+=stat('Siła w obronie',`+${b.l*5}`,`+${nl*5}`);
   if(b.t==='market')rows+=stat('Kurs wymiany',`${Math.round((.55+.07*b.l)*100)}%`,`${Math.round((.55+.07*nl)*100)}%`);
-  if(b.t==='hall'){rows+=stat('Maks. teren',`${10+2*LANDMAX[b.l-1]}×${10+2*LANDMAX[b.l-1]}`,`${10+2*LANDMAX[nl-1]}×${10+2*LANDMAX[nl-1]}`)+stat('Maks. poziom budynków',b.l*2,nl*2);
+  if(b.t==='hall'){rows+=stat('Obszary terenu do kupienia',CHMAX[b.l-1],CHMAX[nl-1])+stat('Maks. poziom budynków',b.l*2,nl*2);
     const nw=Object.entries(DEF).filter(([k,x])=>x.cnt&&x.cnt[nl-1]>x.cnt[b.l-1]).map(([k,x])=>`+${x.cnt[nl-1]-x.cnt[b.l-1]} ${x.n}`).concat(Object.entries(DEF).filter(([k,x])=>!x.cnt&&x.hall===nl).map(([k,x])=>x.n));
     if(nl===3||nl===6)rows+=`<div class="stat"><span>Nowa epoka</span><b class="up">${ERAS[nl===3?1:2]}</b></div>`;
     if(nw.length)rows+=`<div class="stat" style="display:block"><span>Odblokujesz:</span><br><b class="up" style="white-space:normal">${nw.join(', ')}</b></div>`}
   dialog(`Ulepsz: ${b.t==='hall'?hallName(b.l):d.n}`,`<div class="dlg-c"><img src="${thumb(b.t,nl)}" alt=""><h4>Poziom ${b.l} → ${nl}${b.t==='hall'&&hallName(nl)!==hallName(b.l)?' · staje się: '+hallName(nl)+'!':''}</h4></div>${rows}<div class="cost">${costHTML(c)}<span>⏱ ${ft(t)}</span></div>${freeB()<1?'<p class="note" style="text-align:center;color:#9d2a1f">👷 Wszyscy budowniczowie są zajęci</p>':''}`,
-    [['Ulepsz',()=>{if(startUpgrade(b))closePanel()},'y',!canPay(c)||freeB()<1]])}
+    [[canPay(c)?'Ulepsz':'Ulepsz (dopłać 💎)',()=>{if(startUpgrade(b))closePanel()},'y',freeB()<1]])}
 const stat=(l,a,b)=>`<div class="stat"><span>${l}</span><b>${a} → <span class="up">${b}</span></b></div>`;
 function infoDialog(b){const d=DEF[b.t];dialog(b.t==='hall'?hallName(b.l):d.n,`<div class="dlg-c"><img src="${thumb(b.t,Math.max(1,b.l))}" alt=""><p style="margin:0 6px 10px">${d.d}</p></div>`)}
 /* Wojsko */
@@ -1369,7 +1416,7 @@ function renderArmy(){tabs([['army','🪖 Armia'],['def','🛡️ Obrona'],['hos
     if(nUnits(away))h+=`<div class="stat"><span>Na wyprawach</span><b>${Object.entries(away).filter(x=>x[1]).map(([u,n])=>UNITS[u].e+n).join(' ')}</b></div>`;
     for(const B of TRAINB){const bb=S.b.find(b=>b.t===B&&b.l>=1),q=S.train[B];h+=`<h4>${DEF[B].n}${bb?` · poz. ${bb.l}`:''}</h4>`;
       if(!bb){h+=`<p class="note">${allowed(B)?`Zbuduj ${DEF[B].n} w Budowaniu.`:`Dostępne od: ${hallName(unlockAt(B))} poz. ${unlockAt(B)}.`}</p>`;continue}
-      if(q.length)h+=`<div class="stat"><span>Szkolenie: ${q.slice(0,10).map(x=>UNITS[x.u].e).join('')}${q.length>10?'…':''}</span><b>⏱ <span data-end="${q[0].end}"></span></b></div>`;
+      if(q.length)h+=`<div class="stat"><span>Szkolenie: ${q.slice(0,10).map(x=>UNITS[x.u].e).join('')}${q.length>10?'…':''} · ⏱ <span data-end="${q[q.length-1].end}"></span></span><button class="btn s p" data-spq="${B}">⚡ ${gemCost((q[q.length-1].end-Date.now())/1000)}💎</button></div>`;
       h+=Object.entries(UNITS).filter(([,X])=>X.b===B).map(([u,X])=>{const lock=bb.l<X.bl;return `<div class="li ${lock?'lock':''}"><div class="ic">${X.e}<small>${S.army[u]}</small></div><div class="tx"><b>${X.n}</b><span class="tag ${X.cls}">${CLS[X.cls].n}</span>siła ${X.pow} · ${X.h} miejsc · ⏱${X.t}s<div class="cost" style="justify-content:flex-start;margin:4px 0 0;font-size:13px">${costHTML(X.cost)}</div></div>
         ${lock?`<small style="font:800 12px Baloo 2">${DEF[B].n}<br>poz. ${X.bl}</small>`:`<div class="btns"><button class="btn s" data-u="${u}" data-n="1">+1</button><button class="btn s y" data-u="${u}" data-n="5">+5</button>${S.army[u]?`<button class="btn s r" data-x="${u}" title="Zwolnij">−1</button>`:""}</div>`}</div>`}).join('')}}
   else if(armyTab==='def'){const rs=raidState();
@@ -1382,14 +1429,14 @@ function renderArmy(){tabs([['army','🪖 Armia'],['def','🛡️ Obrona'],['hos
   else if(armyTab==='hosp'){const hb=S.b.find(b=>b.t==='hospital'&&b.l>=1),wh=sumH(S.wounded);
     if(!hb)h+=`<div class="li"><div class="ic">⚕️</div><div class="tx"><b>Brak szpitala</b>${allowed('hospital')?'Zbuduj Szpital polowy (Budowanie → Wojsko). Bez niego wszyscy polegli giną.':'Szpital odblokujesz: '+hallName(unlockAt('hospital'))+' poz. '+unlockAt('hospital')+'.'}</div>${allowed('hospital')?'<button class="btn s" id="hBuild">Zbuduj</button>':''}</div>`;
     else{h+=`<div class="stat"><span>Łóżka zajęte</span><b>${wh+healH()} / ${hospCap()}</b></div><div class="stat"><span>Szansa na rannego zamiast poległego</span><b>${Math.round(Math.min(.9,.5+.08*sk('medic'))*100)}%</b></div>`;
-      if(S.heal.length)h+=`<div class="stat"><span>Leczenie: ${S.heal.slice(0,10).map(x=>UNITS[x.u].e).join('')}</span><b>⏱ <span data-end="${S.heal[0].end}"></span></b></div>`;
+      if(S.heal.length)h+=`<div class="stat"><span>Leczenie: ${S.heal.slice(0,10).map(x=>UNITS[x.u].e).join('')} · ⏱ <span data-end="${S.heal[S.heal.length-1].end}"></span></span><button class="btn s p" data-sph="1">⚡ ${gemCost((S.heal[S.heal.length-1].end-Date.now())/1000)}💎</button></div>`;
       const list=Object.entries(S.wounded).filter(x=>x[1]>0);
       if(!list.length)h+='<p class="note">Brak rannych. Po bitwie część poległych trafi tutaj — wylecz ich, by wrócili do armii.</p>';
       else{const all={};list.forEach(([u,n])=>{for(const r in UNITS[u].cost)all[r]=(all[r]||0)+Math.ceil(UNITS[u].cost[r]*.3)*n});h+=`<button class="btn y" style="width:100%;margin-bottom:8px" id="hAll">⚕️ Lecz wszystkich · ${costTxt(all)}</button>`;
         h+=list.map(([u,n])=>{const X=UNITS[u],c={};for(const r in X.cost)c[r]=Math.ceil(X.cost[r]*.3);return `<div class="li"><div class="ic">${X.e}<small>${n}</small></div><div class="tx"><b>${X.n} — ranni: ${n}</b>Koszt leczenia: ${costTxt(c)} / szt.</div><button class="btn s" data-heal="${u}">Lecz 1</button></div>`}).join('')}}}
   else{h+=`<div class="li" style="display:block;text-align:center"><b style="font:800 16px Baloo 2">Kto kogo pokonuje?</b><div style="font:800 15px Baloo 2;margin-top:6px;line-height:1.7">🗡️ Piechota ➜ rozbija 🐎 Jazdę<br>🐎 Jazda ➜ rozbija 🏹 Strzelców<br>🏹 Strzelcy ➜ rozbijają 🗡️ Piechotę</div><p class="note">Silniejszy typ zadaje 1,5× obrażeń, słabszy tylko 0,67×. Włócznicy mają aż ×2 przeciw jeździe.</p></div>`;
     h+=Object.entries(UNITS).map(([u,X])=>{const bl=maxL(X.b),lock=bl<X.bl;return `<div class="li ${lock?'lock':''}"><div class="ic">${X.e}</div><div class="tx"><b>${X.n}</b><span class="tag ${X.cls}">${CLS[X.cls].n}</span>siła ${X.pow} · ${X.h} miejsc<br>${X.d}${lock?`<br>🔒 ${DEF[X.b].n} poz. ${X.bl}`:''}</div></div>`}).join('')}
-  setPB(h,pb=>{const hb2=pb.querySelector('#hBuild');if(hb2)hb2.onclick=()=>goTo(['build','hospital']);const ha=pb.querySelector('#hAll');if(ha)ha.onclick=()=>{let n=0;for(const u in S.wounded)n+=healUnit(u,S.wounded[u]);if(n)toast(`⚕️ Leczenie: ${n} rannych`);renderArmy()};pb.querySelectorAll('[data-heal]').forEach(b=>b.onclick=()=>{healUnit(b.dataset.heal,1);renderArmy()});const ar=pb.querySelector('#aRaid');if(ar)ar.onclick=()=>{armyTab='def';$('#pB').dataset.h='';renderArmy()};pb.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{trainUnit(b.dataset.u,+b.dataset.n);renderArmy()});pb.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const u=b.dataset.x;if(S.army[u]>0){S.army[u]--;dirty=true;sync();sfx('tap');toast(UNITS[u].e+' Jednostka zwolniona — zwolniło się miejsce')}renderArmy()})})}
+  setPB(h,pb=>{pb.querySelectorAll('[data-spq]').forEach(b=>b.onclick=()=>{speedQueue(S.train[b.dataset.spq],'Szkolenie');$('#pB').dataset.h='';renderArmy()});pb.querySelectorAll('[data-sph]').forEach(b=>b.onclick=()=>{speedQueue(S.heal,'Leczenie');$('#pB').dataset.h='';renderArmy()});const hb2=pb.querySelector('#hBuild');if(hb2)hb2.onclick=()=>goTo(['build','hospital']);const ha=pb.querySelector('#hAll');if(ha)ha.onclick=()=>{let n=0;for(const u in S.wounded)n+=healUnit(u,S.wounded[u]);if(n)toast(`⚕️ Leczenie: ${n} rannych`);renderArmy()};pb.querySelectorAll('[data-heal]').forEach(b=>b.onclick=()=>{healUnit(b.dataset.heal,1);renderArmy()});const ar=pb.querySelector('#aRaid');if(ar)ar.onclick=()=>{armyTab='def';$('#pB').dataset.h='';renderArmy()};pb.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{trainUnit(b.dataset.u,+b.dataset.n);renderArmy()});pb.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{const u=b.dataset.x;if(S.army[u]>0){S.army[u]--;dirty=true;sync();sfx('tap');toast(UNITS[u].e+' Jednostka zwolniona — zwolniło się miejsce')}renderArmy()})})}
 /* Kreator bohatera */
 const SKINS=['#f6d7b8','#f1c79c','#d9a87a','#b07a4f','#7a4f2f'],HAIRC=['#2b1a0b','#5a3a1a','#a8642a','#e8c25a','#c8c8c8','#b0302a'],HAIRS=[['short','Krótkie'],['long','Długie'],['beard','Z brodą'],['bald','Łysy']];
 const STARTSK=['farmer','lumber','mason','treas','war','def'];
@@ -1418,7 +1465,7 @@ function renderCreator(){const c=CR;let h=`<img class="crimg" id="crImg" src="${
 const NET={url:'https://pmnrgfgeoccuyvksidgu.supabase.co',key:'sb_publishable_hiWSsAijxE-cjrphmJbHYQ_r-j8T8iL',ok:null,last:0,list:null};
 async function rpc(fn,args,keep){const r=await fetch(NET.url+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:NET.key,'Content-Type':'application/json'},body:JSON.stringify(args||{}),keepalive:!!keep});if(!r.ok)throw new Error('rpc '+r.status);return r.json()}
 function netId(){if(!S.net){const a=new Uint8Array(24);crypto.getRandomValues(a);S.net={id:(crypto.randomUUID?crypto.randomUUID():'xxxxxxxx-xxxx-4xxx-8xxx-xxxxxxxxxxxx'.replace(/x/g,()=>(Math.random()*16|0).toString(16))),token:[...a].map(b=>b.toString(16).padStart(2,'0')).join(''),share:1};dirty=true}return S.net}
-const snapshot=()=>({b:S.b.filter(b=>b.l>=1).map(b=>[b.t,b.i,b.j,b.l,b.rot||0]),land:S.land,army:S.army,hero:{look:S.hero.look},st:{raidWin:S.st.raidWin||0,loots:S.st.loots||0,healed:S.st.healed||0}});
+const snapshot=()=>({b:S.b.filter(b=>b.l>=1).map(b=>[b.t,b.i,b.j,b.l,b.rot||0]),land:S.land,chunks:S.chunks,army:S.army,hero:{look:S.hero.look},st:{raidWin:S.st.raidWin||0,loots:S.st.loots||0,healed:S.st.healed||0}});
 async function netPush(keep){if(window.__visit||!S.hero.made||!S.started)return;const n=netId();if(!n.share)return;
   try{await rpc('osada_save',{p_id:n.id,p_token:n.token,p_name:S.hero.name,p_title:titleOf(S.lvl)[1],p_lvl:S.lvl,p_hall:hallL(),p_power:Math.round(unitPow()+homeDef().inf+homeDef().rng),p_raids:S.st.raidWin||0,p_loots:S.st.loots||0,p_snap:snapshot()},keep);NET.ok=true;NET.last=Date.now()}catch(e){NET.ok=false}}
 const agoTxt=t=>{const m=Math.round((Date.now()-new Date(t).getTime())/60000);return m<2?'teraz online':m<60?m+' min temu':m<1440?Math.round(m/60)+' godz. temu':Math.round(m/1440)+' dni temu'};
@@ -1439,11 +1486,11 @@ async function visitVillage(id){toast('🚶 Wyruszasz z wizytą…');let row=nul
 function enterVisit(row){if(HOMES)leaveVisit();closePanel();if(MAP.open)closeMap();deselect();if(PL)endPlace();save();HOMES=S;window.__visit=row;
   const sn=row.snapshot||{},v=fresh();v.b=(sn.b||[]).filter(x=>DEF[x[0]]).map(([t,i,j,l,rot],k)=>({id:900000+k,t,i,j,l,rot:rot||0,t0:Date.now()}));
   if(!v.b.some(b=>b.t==='hall'))v.b.push({id:900999,t:'hall',i:13,j:13,l:row.hall||1,t0:Date.now()});
-  v.obs=[];v.land=sn.land||0;Object.assign(v.army,sn.army||{});v.hero={name:row.name,look:sn.hero&&sn.hero.look,made:1};v.lvl=row.lvl||1;v.st=sn.st||{};v.world=HOMES.world;v.q=0;S=normalize(v);
+  v.obs=[];v.land=sn.land||0;v.chunks=sn.chunks||[];UNLC=null;Object.assign(v.army,sn.army||{});v.hero={name:row.name,look:sn.hero&&sn.hero.look,made:1};v.lvl=row.lvl||1;v.st=sn.st||{};v.world=HOMES.world;v.q=0;S=normalize(v);
   resetPeople();sync();cam.t.set(0,0,0);cam.d=24;document.body.classList.add('visit');
   const t=TITLES.find(x=>x[1]===row.title)||TITLES[0];$('#visitBar').innerHTML=`<div><b class="ol">${t[2]} ${t[1]} ${String(row.name).replace(/[<>&]/g,'')}</b><small>${hallName(row.hall)} poz. ${row.hall} · 🏆 ${(sn.st||{}).raidWin||0} najazdów · 💰 ${(sn.st||{}).loots||0} łupów</small></div><button class="btn y s" id="vBack">🏠 Wróć do siebie</button>`;
   $('#vBack').onclick=leaveVisit;banner(`Wioska: ${row.name}`,'Tryb podglądu');sfx('tap')}
-function leaveVisit(){if(!HOMES)return;S=HOMES;HOMES=null;window.__visit=null;resetPeople();sync();document.body.classList.remove('visit');cam.t.set(-.4,0,-.4);cam.d=22;sfx('tap')}
+function leaveVisit(){if(!HOMES)return;S=HOMES;UNLC=null;HOMES=null;window.__visit=null;resetPeople();sync();document.body.classList.remove('visit');cam.t.set(-.4,0,-.4);cam.d=22;sfx('tap')}
 function resetPeople(){people.villagers.forEach(p=>scene.remove(p.f));people.villagers=[];people.sKey=null;people.hKey=null}
 /* Bohater */
 function openHero(){openPanel('Bohater wioski','hero',renderHero)}
@@ -1456,10 +1503,10 @@ function renderHero(){const t=titleOf(S.lvl),nt=nextTitle(S.lvl),now=Date.now();
   h+=Object.entries(SKILLS).map(([k,x])=>{const v=sk(k),lock=S.lvl<x.req;return `<div class="li ${lock?'lock':''}"><div class="ic">${x.e}<small>${v}/${SKMAX}</small></div><div class="tx"><b>${x.n}</b>${x.d}${lock?`<br>🔒 od poziomu ${x.req} (${titleOf(x.req)[1]})`:''}<div class="qbar"><i style="width:${v/SKMAX*100}%"></i></div></div>${lock?'':`<button class="btn s ${S.sp&&v<SKMAX?'y':''}" data-sk="${k}" ${S.sp&&v<SKMAX?'':'disabled'}>+</button>`}</div>`}).join('');
   h+='<h4>Trening bohatera</h4>';
   if(S.htrain)h+=`<div class="li cur"><div class="ic">${S.htrain.e}</div><div class="tx"><b>${S.htrain.n}</b>+${S.htrain.xp} XP · koniec za <span data-end="${S.htrain.end}"></span></div><button class="btn s p" id="hSpeed">⚡ ${gemCost((S.htrain.end-now)/1000)}💎</button></div>`;
-  else h+=HTRAIN.map((x,i)=>{const lock=S.lvl<x.req,c=x.c(S.lvl);return `<div class="li ${lock?'lock':''}"><div class="ic">${x.e}</div><div class="tx"><b>${x.n}</b>+${Math.round(xpNeed(S.lvl)*x.x)} XP · ⏱ ${ft(x.t)}${lock?`<br>🔒 od poziomu ${x.req}`:''}<div class="cost" style="justify-content:flex-start;margin:4px 0 0;font-size:13px">${costHTML(c)}</div></div>${lock?'':`<button class="btn s" data-ht="${i}" ${canPay(c)?'':'disabled'}>Trenuj</button>`}</div>`}).join('');
+  else h+=HTRAIN.map((x,i)=>{const lock=S.lvl<x.req,c=x.c(S.lvl);return `<div class="li ${lock?'lock':''}"><div class="ic">${x.e}</div><div class="tx"><b>${x.n}</b>+${Math.round(xpNeed(S.lvl)*x.x)} XP · ⏱ ${ft(x.t)}${lock?`<br>🔒 od poziomu ${x.req}`:''}<div class="cost" style="justify-content:flex-start;margin:4px 0 0;font-size:13px">${costHTML(c)}</div></div>${lock?'':`<button class="btn s" data-ht="${i}">${canPay(c)?'Trenuj':'Trenuj 💎'}</button>`}</div>`}).join('');
   h+=`<p class="note">Bohater zdobywa doświadczenie za zbieranie, budowy, zadania, obronę i łupy. Co poziom: 1 punkt umiejętności. Tytuły: Wieśniak → Sołtys → Burmistrz → Prezydent → Król.</p>${skTotal()?'<button class="btn r s" id="hReset" style="width:100%">Rozdaj punkty od nowa · 20💎</button>':''}`;
   setPB(h,pb=>{pb.querySelectorAll('[data-sk]').forEach(b=>b.onclick=()=>{const k=b.dataset.sk;if(!S.sp||sk(k)>=SKMAX)return;S.sk[k]=sk(k)+1;S.sp--;dirty=true;sfx('up');heroFx(12);toast(`${SKILLS[k].e} ${SKILLS[k].n} — poziom ${S.sk[k]}`);renderHero()});
-    pb.querySelectorAll('[data-ht]').forEach(b=>b.onclick=()=>{const x=HTRAIN[+b.dataset.ht],c=x.c(S.lvl);if(!canPay(c)){toast('Brakuje surowców');sfx('err');return}pay(c);S.htrain={n:x.n,e:x.e,xp:Math.round(xpNeed(S.lvl)*x.x),end:Date.now()+x.t*1000};dirty=true;sfx('train');renderHero()});
+    pb.querySelectorAll('[data-ht]').forEach(b=>b.onclick=()=>{const x=HTRAIN[+b.dataset.ht],c=x.c(S.lvl);if(!canPay(c)){ensure(c,()=>{openHero();setTimeout(()=>{const q=document.querySelector('[data-ht="'+b.dataset.ht+'"]');if(q)q.click()},50)},x.n);return}pay(c);S.htrain={n:x.n,e:x.e,xp:Math.round(xpNeed(S.lvl)*x.x),end:Date.now()+x.t*1000};dirty=true;sfx('train');renderHero()});
     const sp2=pb.querySelector('#hSpeed');if(sp2)sp2.onclick=()=>{const g=gemCost((S.htrain.end-Date.now())/1000);if(S.gems<g){toast('Za mało klejnotów 💎');return}S.gems-=g;S.htrain.end=Date.now();checkJobs();renderHero()};
     const nm=pb.querySelector('#hName');if(nm)nm.onclick=()=>openCreator(false);
     const rs=pb.querySelector('#hReset');if(rs)rs.onclick=()=>{if(S.gems<20){toast('Potrzeba 20 💎');return}S.gems-=20;S.sp+=skTotal();S.sk={};dirty=true;renderHero()}})}
@@ -1526,7 +1573,7 @@ function openMenu(){openPanel('Menu','menu',()=>{const ago=Math.round((Date.now(
   $('#mSnd').onclick=()=>{S.snd=S.snd?0:1;dirty=true;audioInit();sfx('tap');openMenu()};$('#mSave').onclick=openSaveDlg;$('#mStats').onclick=openStats;$('#mHero').onclick=openHero;$('#mPlayers').onclick=openPlayers;$('#mHelp').onclick=openHelp;
   $('#mNew').onclick=()=>dialog('Na pewno?','<p style="text-align:center">Cała osada zostanie usunięta i zaczniesz od skromnej zagrody. Tego nie da się cofnąć.</p>',[['Anuluj',openMenu],['Usuń i zacznij',()=>{S=fresh();S.started=1;save();IDB.put(JSON.stringify(S));window.__restoring=1;location.reload()},'r']])})}
 function openStats(){const pt=Math.round((Date.now()-(S.born||Date.now()))/60000);dialog('Statystyki',[['🏰 Siedziba',hallName(hallL())+' poz. '+hallL()],['🗺️ Teren',side()+'×'+side()],['🏠 Budynki',S.b.filter(b=>b.l>=1).length],['🪖 Wojsko',nUnits(S.army)+nUnits(awayUnits())],['🏆 Odparte najazdy',S.st.raidWin||0],['🔥 Przegrane najazdy',S.st.raidLose||0],['💰 Złupione osady',S.st.loots||0],['🪓 Wycięte przeszkody',S.st.clear||0],['📜 Zadania',S.q+'/'+QUESTS.length],['⏱️ Od założenia',pt>120?Math.round(pt/60)+' godz.':pt+' min']].map(([a,b])=>`<div class="stat"><span>${a}</span><b>${b}</b></div>`).join(''),[['Wróć',openMenu]])}
-function openHelp(){dialog('Jak grać',`<div class="stat" style="display:block">🌾 <b>Zbieraj</b> — dymek pojawia się nad pełnym budynkiem. Mniejszy zapas zbierzesz ręcznie: dotknij budynku → Zbierz. Produkcja trwa także, gdy nie grasz.</div><div class="stat" style="display:block">🔨 <b>Buduj</b> — Budowanie → wybierz budynek → przeciągnij go na zielone kratki → ✔.</div><div class="stat" style="display:block">⬆️ <b>Ulepszaj</b> — dotknij budynku → Ulepsz. ${hallName(hallL())} odblokowuje nowe budynki i teren.</div><div class="stat" style="display:block">🛡️ <b>Broń się</b> — najazdy przychodzą co kilka minut. Pasek po lewej pokazuje, kto nadciąga i czy jesteś gotowy.</div><div class="stat" style="display:block">🗺️ <b>Łup</b> — na Mapie wybierz osadę i wyślij wojsko. Wraca z surowcami.</div><div class="stat" style="display:block">👥 <b>Gracze</b> — Menu → Gracze: lista osad innych graczy. Wyślij znajomemu link, a zobaczycie nawzajem swoje wioski.</div><div class="stat" style="display:block">🏅 <b>Wyzwania i Zadania dnia</b> — w Celach. Setki celów z nagrodami, codziennie nowe zadania.</div><div class="stat" style="display:block">⭐ <b>Bohater</b> — dotknij ⭐ w lewym górnym rogu. Za każdy poziom dostajesz punkt umiejętności, który daje bonus całej wiosce.</div><div class="stat" style="display:block">🌙 <b>Noc</b> — co 12 minut zapada noc. Nocne najazdy są o 15% silniejsze.</div><div class="stat" style="display:block">⚕️ <b>Szpital</b> — część poległych trafia do szpitala; wylecz ich w Wojsko → Szpital.</div><div class="stat" style="display:block">🎒 <b>Rzadkie surowce</b> — 🔩 żelazo, 🏺 artefakty i 🔮 kryształy zdobywasz z łupów, obrony i wypraw poszukiwawczych (Mapa → ⛏️🕳️❌🏚️💠). Potrzebne do budynków Specjalnych.</div><div class="stat" style="display:block">⚔️ <b>Kontry</b> — piechota bije jazdę, jazda strzelców, strzelcy piechotę.</div>`,[['Wróć',openMenu]])}
+function openHelp(){dialog('Jak grać',`<div class="stat" style="display:block">🌾 <b>Zbieraj</b> — dymek pojawia się nad pełnym budynkiem. Mniejszy zapas zbierzesz ręcznie: dotknij budynku → Zbierz. Produkcja trwa także, gdy nie grasz.</div><div class="stat" style="display:block">🔨 <b>Buduj</b> — Budowanie → wybierz budynek → przeciągnij go na zielone kratki → ✔.</div><div class="stat" style="display:block">⬆️ <b>Ulepszaj</b> — dotknij budynku → Ulepsz. ${hallName(hallL())} odblokowuje nowe budynki i teren.</div><div class="stat" style="display:block">🛡️ <b>Broń się</b> — najazdy przychodzą co kilka minut. Pasek po lewej pokazuje, kto nadciąga i czy jesteś gotowy.</div><div class="stat" style="display:block">🗺️ <b>Łup</b> — na Mapie wybierz osadę i wyślij wojsko. Wraca z surowcami.</div><div class="stat" style="display:block">👥 <b>Gracze</b> — Menu → Gracze: lista osad innych graczy. Wyślij znajomemu link, a zobaczycie nawzajem swoje wioski.</div><div class="stat" style="display:block">🏅 <b>Wyzwania i Zadania dnia</b> — w Celach. Setki celów z nagrodami, codziennie nowe zadania.</div><div class="stat" style="display:block">⭐ <b>Bohater</b> — dotknij ⭐ w lewym górnym rogu. Za każdy poziom dostajesz punkt umiejętności, który daje bonus całej wiosce.</div><div class="stat" style="display:block">🌙 <b>Noc</b> — co 12 minut zapada noc. Nocne najazdy są o 15% silniejsze.</div><div class="stat" style="display:block">⚕️ <b>Szpital</b> — część poległych trafia do szpitala; wylecz ich w Wojsko → Szpital.</div><div class="stat" style="display:block">💎 <b>Klejnoty</b> — gdy brakuje surowców, możesz dokupić resztę za klejnoty. Przyspieszają też budowy, szkolenie, leczenie i napełniają budynki (⚡ Napełnij).</div><div class="stat" style="display:block">🗺️ <b>Teren</b> — Budowanie → Teren → wybierz żółty obszar 5×5 przy granicy osady.</div><div class="stat" style="display:block">🎒 <b>Rzadkie surowce</b> — 🔩 żelazo, 🏺 artefakty i 🔮 kryształy zdobywasz z łupów, obrony i wypraw poszukiwawczych (Mapa → ⛏️🕳️❌🏚️💠). Potrzebne do budynków Specjalnych.</div><div class="stat" style="display:block">⚔️ <b>Kontry</b> — piechota bije jazdę, jazda strzelców, strzelcy piechotę.</div>`,[['Wróć',openMenu]])}
 async function packSave(){save();const j=JSON.stringify(S);try{if(window.CompressionStream){const b=await new Response(new Blob([j]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer();let t='';new Uint8Array(b).forEach(x=>t+=String.fromCharCode(x));return 'OSADA1:'+btoa(t)}}catch(e){}return 'OSADA0:'+btoa(unescape(encodeURIComponent(j)))}
 async function unpackSave(code){code=code.trim();if(code.startsWith('OSADA1:')){const bin=atob(code.slice(7)),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return JSON.parse(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}
   if(code.startsWith('OSADA0:'))return JSON.parse(decodeURIComponent(escape(atob(code.slice(7)))));throw new Error('zły kod')}
@@ -1559,6 +1606,12 @@ $('#r-gems').onclick=()=>toast('💎 Klejnoty — przyspieszają budowy. Zdobywa
 $('#bld').onclick=()=>toast(`👷 Budowniczowie: ${freeB()} wolnych z ${builders()}. Więcej chat = więcej budów naraz.`);
 $('#plvw').onclick=()=>{audioInit();openHero()};
 const shown={};
+/* dymki informacyjne — każdy pokazuje się raz */
+const HQ=[];let hintOn=null;
+function hint(k,ic,t,d){S.hints=S.hints||{};if(S.hints[k]||HQ.some(h=>h.k===k)||(hintOn&&hintOn.k===k))return;HQ.push({k,ic,t,d});showHint()}
+function showHint(){if(hintOn||!HQ.length||PANEL||MAP.open||RA)return;hintOn=HQ.shift();const el=$('#hint');el.innerHTML=`<div class="ic">${hintOn.ic}</div><div class="tx"><b>${hintOn.t}</b>${hintOn.d}</div><button class="btn y s">OK</button>`;el.classList.add('on');sfx('tap');
+  el.querySelector('button').onclick=()=>{S.hints[hintOn.k]=1;dirty=true;el.classList.remove('on');hintOn=null;setTimeout(showHint,400)}}
+const newBuild=()=>Object.keys(DEF).filter(t=>DEF[t].cat!=='x'&&allowed(t)>0&&!(S.seenB||{})[t]);
 function hud(){
   for(const k in RES){const el=$('#r-'+k),cp=capOf(k);shown[k]=shown[k]==null?S.res[k]:shown[k]+(S.res[k]-shown[k])*.25;if(Math.abs(shown[k]-S.res[k])<1)shown[k]=S.res[k];
     el.querySelector('.v').textContent=fmt(shown[k]);el.querySelector('.c b').style.transform=`scaleX(${Math.min(1,S.res[k]/cp)})`;el.classList.toggle('full',S.res[k]>=cp)}
@@ -1570,13 +1623,23 @@ function hud(){
   if(ok){const key='q'+S.q;if(qe.dataset.k!==key){qe.dataset.k=key;qe.innerHTML=`<div class="ic">✅</div><div class="tx"><b>Zadanie wykonane!</b>${q.t}<br>Nagroda: ${costTxt(q.r)}</div><button class="btn y s">Odbierz</button>`;
     qe.querySelector('button').onclick=e=>{e.stopPropagation();claimQuest()};sfx('chest')}qe.classList.toggle('on',!PANEL&&!MAP.open&&!PL)}
   else{qe.classList.remove('on');qe.dataset.k=''}
-  const canBuild=freeB()>0&&Object.keys(DEF).some(t=>DEF[t].cat!=='x'&&DEF[t].cat!=='dec'&&cntAll(t)<allowed(t)&&canPay(newCost(t)));
-  $('#dBuild').classList.toggle('on',canBuild);
+  const nb=newBuild();$('#dBuild').classList.toggle('on',nb.length>0);$('#dBuild').textContent='Nowe';
+  if(nb.length&&S.q>1)hint('newb','🔨','Nowe budynki!','Plakietka „Nowe” na Budowaniu oznacza, że odblokowałeś budynek, którego jeszcze nie oglądałeś.');
+  const rsE=$('#rstrip');if(rs&&!RA&&!PANEL&&!MAP.open){const L=rs.left;rsE.className='rstrip on '+(rs.lvl==='good'?'':rs.lvl)+(L<60?' hot':'');
+    rsE.innerHTML=`<b>⚔️ ${ft(L)}</b><span>Najazd: ${S.raid.name}${isNight(S.raid.at)&&!cnt('magetower')?' 🌙':''} · wróg ${rs.ee} vs obrona ${rs.pe} — ${rs.lvl==='good'?'jesteś gotowy ✔':rs.lvl==='mid'?'wyrównane siły':'za słaba obrona!'}</span><b>›</b>`;
+    hint('raid','⚔️','Nadciąga najazd!','Pasek u góry odlicza czas do ataku barbarzyńców. Zielony = obrona wystarczy, żółty = wyrównane, czerwony = za słaba. Dotknij go, by wzmocnić obronę.')}
+  else if(RA&&!PANEL){rsE.className='rstrip on bad hot';rsE.innerHTML='<b>⚔️ Trwa bitwa!</b><span>'+RA.R.name+'</span>'}else rsE.className='rstrip';
   const hot=!!(RA||rs&&(rs.lvl==='bad'||rs.left<60));$('#dArmy').classList.toggle('on',hot);$('#dArmy').textContent=RA?'⚔️':rs&&rs.left<60?ft(rs.left):'!';
-  $('#dMap').classList.toggle('on',!!MAP.news||S.marches.length>0);$('#dMap').textContent=S.marches.length||'!';
-  const gn=(ok?1:0)+achReady()+dailyReady();$('#dGoals').classList.toggle('on',gn>0);$('#dGoals').textContent=gn;document.querySelector('.nb[data-n=goals]').classList.toggle('pulse',!ok&&S.q<6&&!PANEL);
+  $('#dMap').classList.toggle('on',!!MAP.news||S.marches.length>0);$('#dMap').textContent=S.marches.length?'🧭'+S.marches.length:'!';
+  if(S.marches.length)hint('march','🗺️','Wyprawa w drodze','Liczba na przycisku Mapa to Twoje wyprawy w drodze. Otwórz Mapę, by zobaczyć, gdzie idą i kiedy wrócą.');
+  if(S.b.some(b=>DEF[b.t].prod&&b.l>=1&&readyB(b)))hint('bubble','🌾','Dymek = pełny magazyn','Dymek nad budynkiem pokazuje, że jest pełny — dotknij, by zebrać. Mniejszy zapas zbierzesz ręcznie: dotknij budynku → Zbierz.');
+  if(hot&&rs&&rs.left<60)hint('armydot','⚠️','Odliczanie na Wojsku','Czerwona plakietka z czasem na przycisku Wojsko to minuta do najazdu.');
+  if(S.b.some(b=>b.job))hint('job','🔨','Trwa budowa','Licznik 🔨 nad budynkiem to czas do końca budowy lub ulepszenia. Dotknij budynku → ⚡ Ukończ, by przyspieszyć za klejnoty.');
+  const gn=(ok?1:0)+achReady()+dailyReady();$('#dGoals').classList.toggle('on',gn>0);$('#dGoals').textContent=gn;if(gn&&S.q>0)hint('goals','📜','Nagrody do odebrania','Liczba na przycisku Cele to nagrody czekające na odebranie (zadania, wyzwania, zadania dnia).');
+  if(!PANEL)showHint();document.querySelector('.nb[data-n=goals]').classList.toggle('pulse',!ok&&S.q<6&&!PANEL);
 }
 $('#quest').onclick=()=>{audioInit();openGoals()};
+$('#rstrip').onclick=()=>{audioInit();openArmy('def')};
 function toScreen(v){const p=v.clone().project(camera);return{x:(p.x+1)/2*innerWidth,y:(1-p.y)/2*innerHeight,vis:p.z<1}}
 function flyRes(r,x,y,n){const tg=($('#r-'+r)||$('#rarep')).getBoundingClientRect(),tx=tg.right-4,ty=tg.top+tg.height/2;popTxt('+'+fmt(n),x,y-30);
   for(let i=0;i<Math.min(7,2+n/20);i++){const f=document.createElement('div');f.className='fly';f.textContent=ICON(r);const ox=(Math.random()-.5)*50,oy=(Math.random()-.5)*30;
@@ -1689,7 +1752,7 @@ function frame(){requestAnimationFrame(frame);const dt=Math.min(.05,clock.getDel
   if(!RA)people.soldiers.forEach((f,k)=>{f.position.y=Math.abs(Math.sin(T*3+k))*.02;if(f.userData.weapon)f.userData.weapon.rotation.x=0});
   raidFrame(dt,T);
   if(SEL){const o=SEL.k==='o'&&S.obs.find(q=>q.id===SEL.id),r=SEL.k==='b'?recs[SEL.id]:o?{root:{position:oPos(o)}}:null;if(r){selRing.visible=true;selRing.position.set(r.root.position.x,.05,r.root.position.z);const b=SEL.k==='b'&&S.b.find(q=>q.id===SEL.id);selRing.scale.setScalar((b?DEF[b.t].s:1)*.75*(1+Math.sin(T*5)*.04))}}else selRing.visible=false;
-  if(PL)PL.g.position.y=.15+Math.sin(T*5)*.06;
+  if(PL)PL.g.position.y=.15+Math.sin(T*5)*.06;if(LP)LPMAT.opacity=.5+Math.sin(T*4)*.15;
   labels();renderer.render(scene,camera)}
 
 /* =====================================================================
